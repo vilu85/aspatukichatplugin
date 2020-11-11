@@ -8,10 +8,10 @@ var htmlmin = require('gulp-htmlmin');
 var del = require('del');
 //const babel = require('gulp-babel');
 
-var jsSrc = './js/src/**/*.js';
-var sassSrc = './css/sass/**/*.scss';
-var cssSrc = './**/*.css';
-var htmlSrc = './**/*.html';
+var jsSrc = './src/**/*.js';
+var sassSrc = './src/**/*.scss';
+var cssSrc = './src/**/*.css';
+var htmlSrc = './src/**/*.html';
 
 const AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -33,13 +33,13 @@ gulp.task('styles', function () {
                 // Minify the file
                 .pipe(csso())
                 // Output
-                .pipe(gulp.dest('./build/css'));
+                .pipe(gulp.dest('./build'));
 });
 
 gulp.task( 'scripts', function() {
   return  gulp.src( jsSrc )
                 .pipe( terser() )
-                .pipe( gulp.dest( './build/js' ) );
+                .pipe( gulp.dest( './build' ) );
 });
 
 // Gulp task to minify HTML files
@@ -59,21 +59,22 @@ gulp.task('html', function() {
 // });
 
 gulp.task('zip', function () {
-  return gulp.src('./bin/**')
+  return gulp.src('./build/**')
                 .pipe( zip('AspaTukiChatPlugin.kpz') )
                 .pipe(gulp.dest('./dist'));
 });
 
 var files = [
-  './**/*.html',
-  './**/*.js',
-  './**/*.css',
-  './**/*.png',
-  './**/*.tt'
+  './src/**/*.html',
+  './src/**/*.js',
+  './src/**/*.css',
+  './src/**/*.png',
+  './src/**/*.tt',
+  './src/**/*.pm'
 ];
-gulp.task('createBin', function() {
+gulp.task('buildSources', function() {
   return gulp.src(files)
-                .pipe(gulp.dest('./bin/AspaTukiChat/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin'));
+                .pipe(gulp.dest('./build'));
 });
 
 gulp.task( 'automate', function() {
@@ -88,3 +89,5 @@ gulp.task('minifyAll',gulp.series('styles','scripts','html'));
  
 //gulp.task( 'default', ['scripts', 'styles', 'automate'] );
 gulp.task('default',gulp.series('scripts','styles','html','automate'));
+
+gulp.task( 'build', gulp.series( 'buildSources', 'minifyAll', 'zip' ));
