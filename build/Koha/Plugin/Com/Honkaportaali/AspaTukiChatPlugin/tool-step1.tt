@@ -1,0 +1,25 @@
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: Notification Plugin: Broadcast Announcement</title>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Notification Plugin &rsaquo; Broadcast Announcement</div>
+
+<div id="doc3">
+    <p>Use the form below to broadcast message for current logged in users.
+
+    <!-- Notice our form here has no 'action', this is good, it means that our forms will always get passed back to 'plugins/run.pl'. You could hard code it instead if you prefer -->
+    <form method="post">
+        <input type="hidden" name="class" value="[% CLASS %]"/>
+        <input type="hidden" name="method" value="[% METHOD %]"/>
+
+        <input type="text" name="message"/>
+        <br/>
+
+        <input name="submitted" type="submit" value="Broadcast"/>
+    </form>
+
+[% INCLUDE 'intranet-bottom.inc' %]
