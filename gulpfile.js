@@ -1,11 +1,13 @@
-var gulp = require('gulp');
-// var uglify = require('gulp-uglify'); //<== Removed because it does not support ES6, use terser instead.
+const gulp = require('gulp');
+// const uglify = require('gulp-uglify'); //<== Removed because it does not support ES6, use terser instead.
 const terser = require('gulp-terser');
-//var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var csso = require('gulp-csso');
-var htmlmin = require('gulp-htmlmin');
-var del = require('del');
+//const sass = require('gulp-sass');
+const autoprefixer = require('gulp-autoprefixer');
+const csso = require('gulp-csso');
+const htmlmin = require('gulp-htmlmin');
+const del = require('del');
+const zip = require('gulp-zip');
+const javascriptObfuscator = require('gulp-javascript-obfuscator');
 //const babel = require('gulp-babel');
 
 var jsSrc = './src/**/*.js';
@@ -77,6 +79,12 @@ gulp.task('buildSources', function() {
                 .pipe(gulp.dest('./build'));
 });
 
+gulp.task('obfuscate', function() {
+  return gulp.src( jsSrc )
+                .pipe(javascriptObfuscator())
+                .pipe(gulp.dest('./build'));
+});
+
 gulp.task( 'automate', function() {
   gulp.watch( [ jsSrc, cssSrc, htmlSrc ], [ 'scripts', 'styles', 'html' ] );
 });
@@ -91,3 +99,5 @@ gulp.task('minifyAll',gulp.series('styles','scripts','html'));
 gulp.task('default',gulp.series('scripts','styles','html','automate'));
 
 gulp.task( 'build', gulp.series( 'buildSources', 'minifyAll', 'zip' ));
+
+gulp.task( 'build release', gulp.series( 'buildSources', 'minifyAll', 'obfuscate', 'zip' ));
