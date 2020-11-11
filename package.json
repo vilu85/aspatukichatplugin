@@ -1,0 +1,32 @@
+{
+  "name": "aspatukichat",
+  "version": "1.0.0",
+  "description": "Support chat for Koha",
+  "main": "index.js",
+  "author": "Ville Perkkio",
+  "private": true,
+  "license": "BSD",
+  "browserslist": [
+    "> 1%",
+    "ie >= 8",
+    "edge >= 15",
+    "ie_mob >= 10",
+    "ff >= 45",
+    "chrome >= 45",
+    "safari >= 7",
+    "opera >= 23",
+    "ios >= 7",
+    "android >= 4",
+    "bb >= 10"
+  ],
+  "devDependencies": {
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-csso": "^4.0.1",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-terser": "^1.4.1",
+    "zip": "^1.2.0"
+  },
+  "dependencies": {}
+}
