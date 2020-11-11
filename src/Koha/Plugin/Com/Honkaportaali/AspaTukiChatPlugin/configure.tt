@@ -1,0 +1,109 @@
+[% INCLUDE 'doc-head-open.inc' %]
+<title>Koha: AspaTukiChat Plugin: Configuration</title>
+[% INCLUDE 'doc-head-close.inc' %]
+<script src="[% PLUGIN_PATH %]/configure.js"></script>
+<link rel="stylesheet" href="[% PLUGIN_PATH %]/configure.css" />
+</head>
+<body>
+	[% INCLUDE 'header.inc' %]
+	[% INCLUDE 'cat-search.inc' %]
+	
+	<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; AspaTukiChat Plugin &rsaquo; Configuration</div>
+	
+	<div id="doc3">
+		<div class="container-fluid main">
+			<div class="row">
+					<div class="col-sm-10 col-sm-push-2">
+						<main>
+							<fieldset>
+								<legend>AspaTukiChat Configuration</legend>
+								<div class="form-group has-feedback"><i aria-hidden="true" class="form-control-feedback fa fa-check success" id="enableDisableChatFeedback"></i><label class="control-label" for="enableChatBtn">Enable/Disable AspaTukiChat </label><button class="btn btn-success btn-sm [% btn_chat_enable %]" id="enableChatBtn"
+										type="button" name="enableChatBtn"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerEnableBtn" style="display: none"></i>Enable</button><span></span><button class="btn btn-danger btn-sm [% btn_chat_disable %]" id="disableChatBtn" type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerDisableBtn" style="display: none"></i>Disable</button></div>
+								<div class="form-group has-feedback"><i aria-hidden="true" class="form-control-feedback fa fa-check success" id="saveMotdFeedback"></i><label class="control-label" for="txtMotd">Message of the day<strong></strong></label><input type="text" id="txtMotd" class="txtMotd form-control" name="txtMotd" value="[% motd %]" />
+									<div role="group" class="btn-group"><button class="btn btn-primary btn-sm" id="saveMotd" type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerSaveMotd" style="display: none"></i><i class="fa fa-save"></i> Save changes</button><button class="btn btn-default btn-sm" id="resetMotd" type="reset"><i class="fa fa-eraser"></i> Reset</button></div>
+									</div>
+									<div class="form-group has-feedback"><i aria-hidden="true" class="form-control-feedback fa fa-check success" id="purgeMessagesFeedback"></i><label class="control-label" for="purgeMessages">Purge messages<strong></strong></label>
+										<div role="group" class="btn-group" id="purgeMessages"><button class="btn btn-default" id="purgeAllMessages" type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerPurgeMessagesAll" style="display: none"></i>All</button><button class="btn btn-default" id="purgeOlderMessages"
+												type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerPurgeMessagesOlder" style="display: none"></i>Older than 1 day</button></div>
+									</div>
+									<div class="form-group has-feedback"><i aria-hidden="true" class="form-control-feedback fa fa-check success" id="purgeUsersFeedback"></i><label class="control-label" for="purgeUsers">Purge users<strong></strong></label>
+										<div role="group" class="btn-group" id="purgeUsers"><button class="btn btn-default" id="purgeAllUsers" type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerPurgeUsersAll" style="display: none"></i>All</button><button class="btn btn-default" id="purgeOlderUsers" type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerPurgeUsersOlder" style="display: none"></i>Older than 1 day</button></div>
+									</div>
+							</fieldset>
+						</main>
+					</div>
+					<div class="col-sm-2 col-sm-pull-10">
+						<aside>
+							<fieldset>
+								<legend>Statistics</legend>
+								<div class="form-group"><label class="control-label" for="messageCount">Messages in db: </label><span id="messageCount">[% message_count %]</span></div>
+								<div class="form-group"><label class="control-label">Users in db: </label><span id="userCount">[% user_count %]</span></div>
+							</fieldset>
+						</aside>
+					</div>
+			</div>
+		</div>
+	</div>	
+	
+	<!-- Delete modal -->
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+
+					<h4 class="modal-title" id="exampleModalLabel">Do you really want to delete template?</h4>
+				</div>
+
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="delete-template-name" class="control-label">Template:</label>
+
+							<div class="input-group">
+								<div class="input-group-addon" id="delete-template-id"></div>
+
+								<div class="form-control" id="delete-template-name"></div><input type="hidden" name="template_id" id="template_id" value="">
+							</div>
+						</div>
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">No</button> <button type="button" class="btn btn-danger" id="confirmDelete">Yes</button>
+				</div>
+			</div>
+		</div>
+	</div><!-- /.Delete modal -->
+		
+	<!-- Rename modal -->
+	<form method="post">
+		<input type="hidden" name="class" value="[% CLASS %]"/>
+		<input type="hidden" name="method" value="[% METHOD %]"/>
+		<div class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Rename template</h4>
+					</div>
+					<div class="modal-body">
+						<p>
+							<label for="new_name">Template name</label>
+							<input type="text" class="form-control" id="new_name">
+						</p>
+					</div>
+					<div class="modal-footer">
+						<input type="hidden" name="save" value="1" />
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save changes</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	</form>
+	<!-- /.Rename modal -->
+		
+	<script>$.getScript('[% PLUGIN_PATH %]/configure.js');</script>
+	[% INCLUDE 'intranet-bottom.inc' %]
+		
