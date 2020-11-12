@@ -5,12 +5,31 @@
                 <div role="group" class="btn-group btn-group-sm mx-0"><button class="btn btn-primary" id="btnChatMinimize" type="button" data-dismiss="modal"><i class="fa fa-window-minimize"></i></button><button class="btn btn-primary" id="btnChatMaximize" type="button"><i class="fa fa-window-maximize"></i></button></div>
             </div>
         </div>
-        <div class="modal-body">
-            <div id="chatmessages" class="chat-box">
-                <div id="loadingAnim" class="loading-icon"><i class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-                    <p class="text-muted" id="loadingMsg"></p>
-                </div>
+        <div class="modal-body" style="padding-top: 5px;padding-right: 5px;padding-left: 5px;padding-bottom: 5px;">
+            <!-- Start: User list -->
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="padding-right: 5px;padding-left: 5px;">
+                <ul class="list-group text-left" id="chatusers" style="padding-right: 5px;">
+                    <li class="list-group-item"><span>List Group Item 1</span></li>
+                    <li class="list-group-item"><span>List Group Item 2</span></li>
+                    <li class="list-group-item"><span>List Group Item 3</span></li>
+                    <li class="list-group-item"><span>List Group Item 3</span></li>
+                    <li class="list-group-item"><span>List Group Item 3</span></li>
+                </ul>
             </div>
+            <!-- End: User list -->
+            <!-- Start: Chat messages -->
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" style="padding-right: 5px;padding-left: 5px;">
+                <!-- Start: Chatbox -->
+                <div id="chatmessages" class="chat-box">
+                    <!-- Start: Loading Page Animation Style -->
+                    <div id="loadingAnim" class="loading-icon"><i class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
+                        <p class="text-muted" id="loadingMsg">Logging in...</p>
+                    </div>
+                    <!-- End: Loading Page Animation Style -->
+                </div>
+                <!-- End: Chatbox -->
+            </div>
+            <!-- End: Chat messages -->
         </div>
         <div class="row">
             <div class="col-md-12">

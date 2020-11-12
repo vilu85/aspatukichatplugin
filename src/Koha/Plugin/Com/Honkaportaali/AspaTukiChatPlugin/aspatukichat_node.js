@@ -27,7 +27,8 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         var $loginPage = $('.login.page'); // The login page
         var $chatPage = $('.chat.page'); // The chatroom page
 
-        const inboxPeople = document.querySelector(".inbox__people"); // User list
+        const inboxPeople = document.querySelector("#chatusers"); // User list
+        const chatModal = document.querySelector("#chatmodal"); // Chat modal
 
         // Prompt for setting a username
         var username = $(".loggedinusername").html();
@@ -35,11 +36,17 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         var typing = false;
         var lastTypingTime;
         var $currentInput;// = $usernameInput.focus();
+        var unreadMsgs = 0;
+
+        // // Add chat button (old style)
+        // $('#i18nMenu').after('<ul class="nav nav-tabs navbar-nav navbar navbar-right"> \
+        //   <li><button id="chatBtn" class="btn btn-primary dropdown-toggle dropdown" type="button">Support&nbsp;<span id="unreadMsgs" class="badge"></span><span class="caret"></span></button> \
+        //   </li></ul>');
 
         // Add chat button
         $('#i18nMenu').after('<ul class="nav nav-tabs navbar-nav navbar navbar-right"> \
-  <li><button id="chatBtn" class="btn btn-primary dropdown-toggle dropdown" type="button">Support&nbsp;<span id="unreadMsgs" class="badge"></span><span class="caret"></span></button> \
-  </li></ul>');
+          <li><button id="chatBtn" class="btn" type="button"><i class="fa fa-comments"></i><span id="unreadMsgs" class="badge"></span></button> \
+          </li></ul>');
 
         // Initialize socket
         var socket = io.connect('http://kohabox:80', {
@@ -49,6 +56,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         // Focus chat inputbox and create cookie to keep chat open when the the chat is opened
         $('#chatmodal').on('shown.bs.modal', function () {
           $.cookie("isChatOpen", 1);
+          unreadMsgs = 0;
           $('#txtMessage').focus();
         });
 
@@ -61,30 +69,26 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         const users = new Set();
 
         const addToUsersBox = (userName) => {
-          if (!inboxPeople || !!document.querySelector(`.${userName}-userlist`)) {
+          if (!inboxPeople || !!document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`)) {
             return;
           }
 
-          const userBox = `
-      <div class="chat_ib ${userName}-userlist">
-        <h5>${userName}</h5>
-      </div>
-    `;
+          const userBox = `<li id="${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry" class="list-group-item"><span>${userName}</span></li>`;
           inboxPeople.innerHTML += userBox;
         };
 
         const removeFromUsersBox = (userName) => {
-          if (!inboxPeople || document.querySelector(`.${userName}-userlist`)) {
-            document.querySelector(`.${userName}-userlist`).remove();
+          if (!inboxPeople || document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`)) {
+            document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`).remove();
           }
         };
 
         const addParticipantsMessage = (data) => {
           var message = '';
           if (data.numUsers === 1) {
-            message += "there's 1 participant";
+            message += "Keskustelussa on 1 osallistuja";
           } else {
-            message += "there are " + data.numUsers + " participants";
+            message += "Keskustelussa on  " + data.numUsers + " osallistujaa";
           }
           log(message);
         };
@@ -137,11 +141,10 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
             options.fade = false;
             $typingMessages.remove();
           }
-
           // Other messages
           var $messageBodyDiv2 = $('<div class="media w-100 mb-3"/>');
           var $mediaLeft = $('<div class="media-left"/>');
-          var $profilePic = $('<img class="img-circle media-object" src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" width="50px" />');
+          var $profilePic = $('<img class="img-thumbnail media-object" src="assets/img/user.svg" width="50px" />');
           var $senderInfo = $('<p class="media-object text-center text-muted"/>')
             .text(data.username)
             .css('color', getUsernameColor(data.username));
@@ -192,7 +195,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         // Adds the visual chat typing message
         const addChatTyping = (data) => {
           data.typing = true;
-          data.message = 'is typing';
+          data.message = 'kirjoittaa...';
           addChatMessage(data);
         };
 
@@ -329,11 +332,15 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         // Whenever the server emits 'new message', update the chat body
         socket.on('new message', (data) => {
           addChatMessage(data);
+          if(!isElementVisible(chatModal)) {
+            ++unreadMsgs;
+            updateUnreadMsgs();
+          }
         });
 
         // Whenever the server emits 'user joined', log it in the chat body
         socket.on('user joined', (data) => {
-          log(data.username + ' joined');
+          log(data.username + ' liittyi');
           data.activeUsers.map((user) => {
             users.add(user);
           });
@@ -343,7 +350,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
 
         // Whenever the server emits 'user left', log it in the chat body
         socket.on('user left', (data) => {
-          log(data.username + ' left');
+          log(data.username + ' poistui');
           addParticipantsMessage(data);
           removeChatTyping(data);
           removeFromUsersBox(data.username);
@@ -360,18 +367,18 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         });
 
         socket.on('disconnect', () => {
-          log('you have been disconnected');
+          log('yhteys katkaistu');
         });
 
         socket.on('reconnect', () => {
-          log('you have been reconnected');
+          log('yhteys muodostettu uudelleen');
           if (username) {
             socket.emit('add user', username);
           }
         });
 
         socket.on('reconnect_error', () => {
-          log('attempt to reconnect has failed');
+          log('yhteyden muodostaminen uudelleen ei onnistunut');
         });
 
         // Whenever the server emits 'new server message', update the chat body
@@ -448,6 +455,9 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           else
             return date + ' ' + month + ' ' + year + ', ' + hour + ':' + min;
         }
+
+        // Check if the given element is visible
+        const isElementVisible = (elementName) => { return elementName.css("display") != "null" && elementName.css("display") != "none"; };
 
         //Log in when everything is ready
         $(document).ready(function () {
