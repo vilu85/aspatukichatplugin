@@ -567,15 +567,21 @@ sub intranet_head {
 sub intranet_js {
     my ( $self ) = @_;
 	
-    my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.js')];
-    my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/aspatukichat_node.js')];
-    my $pageslide_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/jquery.pageslide.min.js')];
+    my $userenv = C4::Context->userenv;
 
-	return q|
-        <script>| . $socketio_js . q|</script>
-        <script>| . $aspatukichat_js . q|</script>
-		<script>| . $pageslide_js . q|</script>
-    |;
+    if($userenv and $userenv->{flags} > 0) {
+        my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.js')];
+        my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/aspatukichat_node.js')];
+        my $pageslide_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/jquery.pageslide.min.js')];
+
+        return q|
+            <script>| . $socketio_js . q|</script>
+            <script>| . $aspatukichat_js . q|</script>
+            <script>| . $pageslide_js . q|</script>
+        |;
+    }
+
+    return;
 }
 
 ## If your tool is complicated enough to needs it's own setting/configuration
