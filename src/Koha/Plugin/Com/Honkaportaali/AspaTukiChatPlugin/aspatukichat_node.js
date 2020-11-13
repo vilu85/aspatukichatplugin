@@ -49,7 +49,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           </li></ul>');
 
         // Initialize socket
-        var socket = io.connect('http://kohabox:80', {
+        var socket = io.connect('http://lainaamo-intra.ouka.fi:80', {
           'path': '/chat/socket.io'
         });
 
