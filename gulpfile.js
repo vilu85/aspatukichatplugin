@@ -72,7 +72,8 @@ var files = [
   './src/**/*.css',
   './src/**/*.png',
   './src/**/*.tt',
-  './src/**/*.pm'
+  './src/**/*.pm',
+  './src/**/*.svg'
 ];
 gulp.task('buildSources', function() {
   return gulp.src(files)
@@ -86,7 +87,7 @@ gulp.task('obfuscate', function() {
 });
 
 gulp.task( 'automate', function() {
-  gulp.watch( [ jsSrc, cssSrc, htmlSrc ], [ 'scripts', 'styles', 'html' ] );
+  gulp.watch( [ jsSrc, cssSrc, htmlSrc ], gulp.series( 'scripts', 'styles', 'html' ) );
 });
 
 // Clean output directory
