@@ -28,7 +28,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         var $chatPage = $('.chat.page'); // The chatroom page
 
         const inboxPeople = document.querySelector("#chatusers"); // User list
-        const chatModal = document.querySelector("#chatmodal"); // Chat modal
+        const chatModal = $('#chatmodal'); // Chat modal
 
         // Prompt for setting a username
         var username = $(".loggedinusername").html();
@@ -49,7 +49,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           </li></ul>');
 
         // Initialize socket
-        var socket = io.connect('http://lainaamo-intra.ouka.fi:80', {
+        var socket = io.connect('http://lainaamo-intra.ouka.fi', {
           'path': '/chat/socket.io'
         });
 
@@ -144,7 +144,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           // Other messages
           var $messageBodyDiv2 = $('<div class="media w-100 mb-3"/>');
           var $mediaLeft = $('<div class="media-left"/>');
-          var $profilePic = $('<img class="img-thumbnail media-object" src="assets/img/user.svg" width="50px" />');
+          var $profilePic = $('<img class="img-thumbnail media-object" src="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/user.svg" width="50px" />');
           var $senderInfo = $('<p class="media-object text-center text-muted"/>')
             .text(data.username)
             .css('color', getUsernameColor(data.username));
@@ -332,7 +332,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         // Whenever the server emits 'new message', update the chat body
         socket.on('new message', (data) => {
           addChatMessage(data);
-          if(!isElementVisible(chatModal)) {
+          if(!isElementVisible($('#chatModal'))) {
             ++unreadMsgs;
             updateUnreadMsgs();
           }
@@ -419,7 +419,8 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
 
         //---- Helper functions ----//
         function updateUnreadMsgs(count) {
-          $('#unreadMsgs').text(count);
+          //$('#unreadMsgs').text(count);
+          document.querySelector("#unreadMsgs").innerText = count;
         }
 
         function showLoading(msg) {
@@ -447,9 +448,9 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           var hour = a.getHours();
           var min = a.getMinutes();
           if (a.setHours(0, 0, 0, 0) == today.setHours(0, 0, 0, 0))
-            return 'today, ' + hour + ':' + min;
+            return 'tänään, ' + hour + ':' + min;
           else if (a.setHours(0, 0, 0, 0) == yesterday.setHours(0, 0, 0, 0))
-            return 'yesterday, ' + hour + ':' + min;
+            return 'eilen, ' + hour + ':' + min;
           else if (year == today.getFullYear())
             return date + ' ' + month + ', ' + hour + ':' + min;
           else
@@ -457,7 +458,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         }
 
         // Check if the given element is visible
-        const isElementVisible = (elementName) => { return elementName.css("display") != "null" && elementName.css("display") != "none"; };
+        const isElementVisible = (elementName) => {console.log("isElementVisible check"); return elementName.css("display") != "null" && elementName.css("display") != "none"; };
 
         //Log in when everything is ready
         $(document).ready(function () {
