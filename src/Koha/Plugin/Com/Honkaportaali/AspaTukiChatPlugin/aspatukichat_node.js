@@ -53,18 +53,6 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           'path': '/chat/socket.io'
         });
 
-        // Focus chat inputbox and create cookie to keep chat open when the the chat is opened
-        $('#chatmodal').on('shown.bs.modal', function () {
-          $.cookie("isChatOpen", 1);
-          unreadMsgs = 0;
-          $('#txtMessage').focus();
-        });
-
-        // Remove isChatOpen-cookie
-        $('#chatmodal').on('hidden.bs.modal', function () {
-          $.removeCookie("isChatOpen");
-        });
-
         // Create usermap
         const users = new Set();
 
@@ -332,9 +320,9 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         // Whenever the server emits 'new message', update the chat body
         socket.on('new message', (data) => {
           addChatMessage(data);
-          if(!isElementVisible($('#chatModal'))) {
+          if(!isElementVisible($('#chatmodal'))) {
             ++unreadMsgs;
-            updateUnreadMsgs();
+            updateUnreadMsgs(unreadMsgs);
           }
         });
 
@@ -458,19 +446,36 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         }
 
         // Check if the given element is visible
-        const isElementVisible = (elementName) => {console.log("isElementVisible check"); return elementName.css("display") != "null" && elementName.css("display") != "none"; };
+        const isElementVisible = (elementName) => { return elementName.css("display") != "null" && elementName.css("display") != "none"; };
 
         //Log in when everything is ready
         $(document).ready(function () {
           if (username) {
             setUsername();
 
+            // Focus chat inputbox and create cookie to keep chat open when the the chat is opened
+            $('#chatmodal').on('shown.bs.modal', function () {
+              $.cookie("isChatOpen", 1);
+              unreadMsgs = 0;
+              $('#txtMessage').focus();
+            });
+
+            // Remove isChatOpen-cookie
+            $('#chatmodal').on('hidden.bs.modal', function () {
+              $.removeCookie("isChatOpen");
+            });
+
             $('#chatBtn').click( () => {
               isChatVisible = !isChatVisible;
               if(isChatVisible) {
                 $('#chatmodal').fadeIn();
+                $.cookie("isChatOpen", 1);
+                unreadMsgs = 0;
+                updateUnreadMsgs(unreadMsgs);
+                $('#txtMessage').focus();
               } else {
                 $('#chatmodal').fadeOut();
+                $.removeCookie("isChatOpen");
               }
             });
           }
