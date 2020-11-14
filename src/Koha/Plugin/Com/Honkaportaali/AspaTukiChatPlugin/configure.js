@@ -69,13 +69,14 @@ function Button(buttonId, spinnerId, feedbackId, onClickFunction) {
 
 
 $( document ).ready(function() {
-  btnEnableChat = new Button("enableChatBtn", "spinnerEnableBtn", "enableDisableChatFeedback", function() { enableChat(true) });
-  btnDisableChat = new Button("disableChatBtn", "spinnerDisableBtn", "enableDisableChatFeedback", function() { enableChat(false) });
-  btnPurgeMessages = new Button("purgeAllMessages", "spinnerPurgeMessagesAll", "purgeMessagesFeedback", function() { purgeMessages(true) });
-  btnPurgeMessagesOlder = new Button("purgeOlderMessages", "spinnerPurgeMessagesOlder", "purgeMessagesFeedback", function() { purgeMessages(false) });
-  btnPurgeUsers = new Button("purgeAllUsers", "spinnerPurgeUsersAll", "purgeUsersFeedback", function() { purgeUsers(true) });
-  btnPurgeUsersOlder = new Button("purgeOlderUsers", "spinnerPurgeUsersOlder", "purgeUsersFeedback", function() { purgeUsers(false) });
-  btnSaveMotd = new Button("saveMotd", "spinnerSaveMotd", "saveMotdFeedback", function() { saveMotd($("#txtMotd").val()) });
+  btnEnableChat = new Button("enableChatBtn", "spinnerEnableBtn", "enableDisableChatFeedback", function() { enableChat(true); });
+  btnDisableChat = new Button("disableChatBtn", "spinnerDisableBtn", "enableDisableChatFeedback", function() { enableChat(false); });
+  btnPurgeMessages = new Button("purgeAllMessages", "spinnerPurgeMessagesAll", "purgeMessagesFeedback", function() { purgeMessages(true); });
+  btnPurgeMessagesOlder = new Button("purgeOlderMessages", "spinnerPurgeMessagesOlder", "purgeMessagesFeedback", function() { purgeMessages(false); });
+  btnPurgeUsers = new Button("purgeAllUsers", "spinnerPurgeUsersAll", "purgeUsersFeedback", function() { purgeUsers(true); });
+  btnPurgeUsersOlder = new Button("purgeOlderUsers", "spinnerPurgeUsersOlder", "purgeUsersFeedback", function() { purgeUsers(false); });
+  btnSaveMotd = new Button("saveMotd", "spinnerSaveMotd", "saveMotdFeedback", function() { saveMotd($("#txtMotd").val()); });
+  btnSaveHost = new Button("saveHost", "spinnerSaveHost", "saveHostFeedback", function() { saveHost($("#socketHost").val()); });
 });
 
 function saveMotd(newMotd) {
@@ -88,6 +89,19 @@ function saveMotd(newMotd) {
     }
   }, function() {
     btnSaveMotd.showSpinner(false);
+  });
+}
+
+function saveHost(newHost) {
+  btnSaveHost.showSpinner(true);
+  send( { "host" : newHost }, "savehost", function(result) {
+    if(result.status == "saved") {
+      btnSaveHost.showSpinner(false);
+      $("#socketHost").text(result.data);
+      btnSaveHost.showFeedback();
+    }
+  }, function() {
+    btnSaveHost.showSpinner(false);
   });
 }
 
