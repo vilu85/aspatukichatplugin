@@ -75,7 +75,8 @@ var files = [
   './src/**/*.png',
   './src/**/*.tt',
   './src/**/*.pm',
-  './src/**/*.svg'
+  './src/**/*.svg',
+  './src/**/*.map'
 ];
 gulp.task('buildSources', function() {
   return gulp.src(files)
