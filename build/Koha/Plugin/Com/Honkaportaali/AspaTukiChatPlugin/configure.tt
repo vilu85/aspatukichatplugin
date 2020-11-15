@@ -29,7 +29,7 @@
 								<legend>Connection</legend>
 								<div class="form-group"><label class="control-label" for="socketHost">Socket host</label><input type="text" id="socketHost" class="form-control" name="socketHost" placeholder="https://localhost:80" value="[% host %]"></div>
 								<!-- Start: Koha SaveReset ButtonGroup -->
-								<div class="btn-group" role="group"><button class="btn btn-primary btn-sm" id="saveHost" type="button"><i class="fa fa-save"></i>&nbsp;Save changes</button><button class="btn btn-default btn-sm" id="resetHost" type="reset"><i class="fa fa-eraser"></i>&nbsp;Reset</button></div>
+								<div class="btn-group" role="group"><button class="btn btn-primary btn-sm" id="saveHost" type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerSaveHost" style="display: none"></i><i class="fa fa-save"></i>&nbsp;Save changes</button><button class="btn btn-default btn-sm" id="resetHost" type="reset"><i class="fa fa-eraser"></i>&nbsp;Reset</button></div>
 								<!-- End: Koha SaveReset ButtonGroup -->
 							</fieldset>
 							<fieldset>
