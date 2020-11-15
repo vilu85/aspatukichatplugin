@@ -55,7 +55,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         });
 
         // Create usermap
-        const users = new Set();
+        var users = new Set();
 
         // const addToUsersBox = (userName) => {
         const addToUsersBox = (data) => {
@@ -331,6 +331,15 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         // Whenever the server emits 'login', log the login message
         socket.on('login', (data) => {
           connected = true;
+          data.activeUsers.map((user) => {
+            users.add(user);
+            var existingUserData = {
+              username : user,
+              rand : Math.random() * 10e5
+            };
+            addToUsersBox(existingUserData);
+          });
+          addToUsersBox(data);
           // Display the welcome message
           var message = "AspaTukiChat – ";
           log(message, {
