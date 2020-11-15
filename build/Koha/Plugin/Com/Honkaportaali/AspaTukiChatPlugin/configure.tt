@@ -3,6 +3,7 @@
 [% INCLUDE 'doc-head-close.inc' %]
 <script src="[% PLUGIN_PATH %]/configure.js"></script>
 <link rel="stylesheet" href="[% PLUGIN_PATH %]/configure.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 </head>
 <body>
 	[% INCLUDE 'header.inc' %]
@@ -14,14 +15,25 @@
 		<div class="container-fluid main">
 			<div class="row">
 					<div class="col-sm-10 col-sm-push-2">
+						<h1>AspaTukiChat Configuration</h1>
 						<main>
 							<fieldset>
-								<legend>AspaTukiChat Configuration</legend>
+								<legend>Common</legend>
 								<div class="form-group has-feedback"><i aria-hidden="true" class="form-control-feedback fa fa-check success" id="enableDisableChatFeedback"></i><label class="control-label" for="enableChatBtn">Enable/Disable AspaTukiChat </label><button class="btn btn-success btn-sm [% btn_chat_enable %]" id="enableChatBtn"
 										type="button" name="enableChatBtn"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerEnableBtn" style="display: none"></i>Enable</button><span></span><button class="btn btn-danger btn-sm [% btn_chat_disable %]" id="disableChatBtn" type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerDisableBtn" style="display: none"></i>Disable</button></div>
 								<div class="form-group has-feedback"><i aria-hidden="true" class="form-control-feedback fa fa-check success" id="saveMotdFeedback"></i><label class="control-label" for="txtMotd">Message of the day<strong></strong></label><input type="text" id="txtMotd" class="txtMotd form-control" name="txtMotd" value="[% motd %]" />
 									<div role="group" class="btn-group"><button class="btn btn-primary btn-sm" id="saveMotd" type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerSaveMotd" style="display: none"></i><i class="fa fa-save"></i> Save changes</button><button class="btn btn-default btn-sm" id="resetMotd" type="reset"><i class="fa fa-eraser"></i> Reset</button></div>
 									</div>
+							</fieldset>
+							<fieldset>
+								<legend>Connection</legend>
+								<div class="form-group"><label class="control-label" for="socketHost">Socket host</label><input type="text" id="socketHost" class="form-control" name="socketHost" placeholder="https://localhost:80" value="[% host %]"></div>
+								<!-- Start: Koha SaveReset ButtonGroup -->
+								<div class="btn-group" role="group"><button class="btn btn-primary btn-sm" id="saveHost" type="button"><i class="fa fa-save"></i>&nbsp;Save changes</button><button class="btn btn-default btn-sm" id="resetHost" type="reset"><i class="fa fa-eraser"></i>&nbsp;Reset</button></div>
+								<!-- End: Koha SaveReset ButtonGroup -->
+							</fieldset>
+							<fieldset>
+                        		<legend>Database</legend>
 									<div class="form-group has-feedback"><i aria-hidden="true" class="form-control-feedback fa fa-check success" id="purgeMessagesFeedback"></i><label class="control-label" for="purgeMessages">Purge messages<strong></strong></label>
 										<div role="group" class="btn-group" id="purgeMessages"><button class="btn btn-default" id="purgeAllMessages" type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerPurgeMessagesAll" style="display: none"></i>All</button><button class="btn btn-default" id="purgeOlderMessages"
 												type="button"><i class="fa fa-spinner fa-spin fa-1x fa-fw" id="spinnerPurgeMessagesOlder" style="display: none"></i>Older than 1 day</button></div>

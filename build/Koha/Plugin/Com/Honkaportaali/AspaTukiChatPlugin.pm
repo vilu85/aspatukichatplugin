@@ -102,6 +102,14 @@ sub tool {
         $self->savemotd();
         return $self;
     }
+    if ( $handler eq 'savehost' ) {
+        $self->savehost();
+        return $self;
+    }
+    if ( $handler eq 'get_configuration' ) {
+        $self->configuration_script();
+        return $self;
+    }
     else {
         unless ( $cgi->param('submitted') ) {
             $self->tool_step1();
@@ -469,6 +477,18 @@ sub savemotd {
     send_reply('saved', $motd);
 }
 
+sub savehost {
+    my ( $self, $args ) = @_;
+    my $cgi            = $self->{'cgi'};
+    my $params         = $cgi->Vars;
+    
+    my $r              = from_json( $params->{userdata} );
+    my $sockethost     = C4::Koha::xml_escape($r->{host});
+    
+    $self->store_data( { host => $sockethost } );
+    send_reply('saved', $sockethost);
+}
+
 sub update_user_state {
     my ( $self, $args ) = @_;
     $self->dieIfOffline();
@@ -531,6 +551,20 @@ sub tool_step2 {
     $template->param( 'message' => $cgi->param('message'));
 
     $self->output_html( $template->output() );
+}
+
+sub configuration_script {
+    my ( $self, $args ) = @_;
+    my $cgi = $self->{'cgi'};
+    my $scriptTemplate = $self->get_template({ file => 'configuration-script.tt' });
+
+    $scriptTemplate->param(
+        is_chat_enabled => $self->isChatEnabled(),
+        motd => $self->retrieve_data('motd'),
+        host => $self->retrieve_data('host')
+    );
+
+    $self->output_html( $scriptTemplate->output() );
 }
 
 sub _getLoggedInUser {
@@ -644,6 +678,7 @@ sub configure {
         btn_chat_enable => $enableChatBtn,
         btn_chat_disable => $disableChatBtn,
         motd => $self->retrieve_data('motd'),
+        host => $self->retrieve_data('host'),
         message_count => $messageCount,
         user_count => $userCount,
         sid => $sid,
@@ -685,7 +720,7 @@ sub install() {
         ) ENGINE = InnoDB;
     ");
     
-    $self->store_data( { motd => '', is_enabled => 1 } );
+    $self->store_data( { motd => '', host => '', is_enabled => 1 } );
     
     return $create_message_table && $create_user_table;
 }

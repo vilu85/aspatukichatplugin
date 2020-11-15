@@ -28,6 +28,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         var $chatPage = $('.chat.page'); // The chatroom page
 
         const inboxPeople = document.querySelector("#chatusers"); // User list
+        var $userlist = $('#chatusers');
         const chatModal = $('#chatmodal'); // Chat modal
 
         // Prompt for setting a username
@@ -53,34 +54,43 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           'path': '/chat/socket.io'
         });
 
-        // Focus chat inputbox and create cookie to keep chat open when the the chat is opened
-        $('#chatmodal').on('shown.bs.modal', function () {
-          $.cookie("isChatOpen", 1);
-          unreadMsgs = 0;
-          $('#txtMessage').focus();
-        });
-
-        // Remove isChatOpen-cookie
-        $('#chatmodal').on('hidden.bs.modal', function () {
-          $.removeCookie("isChatOpen");
-        });
-
         // Create usermap
         const users = new Set();
 
-        const addToUsersBox = (userName) => {
-          if (!inboxPeople || !!document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`)) {
-            return;
+        // const addToUsersBox = (userName) => {
+        const addToUsersBox = (data) => {
+          var $alreadyAddedUsers = getAlreadyAddedUsers(data);
+          if ($alreadyAddedUsers.length !== 0) {
+            $alreadyAddedUsers.remove();
           }
+          // if (!inboxPeople || !!document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`)) {
+          //   return;
+          // }
 
-          const userBox = `<li id="${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry" class="list-group-item"><span>${userName}</span></li>`;
-          inboxPeople.innerHTML += userBox;
+          // const userBox = `<li id="${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry" class="list-group-item"><span>${userName}</span></li>`;
+          //const userBox = `<li class="userentry" id="${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry" class="list-group-item"><span>${userName}</span></li>`;
+          //.data('username', data.username)
+          var $userentry = $('<li class="userentry list-group-item">')
+                .data('username', data.username)
+                .text(data.username);
+          $userlist.append($userentry);
+          // inboxPeople.innerHTML += userBox;
         };
 
-        const removeFromUsersBox = (userName) => {
-          if (!inboxPeople || document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`)) {
-            document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`).remove();
-          }
+        const getAlreadyAddedUsers = (data) => {
+          return $('.userentry').filter(function (i) {
+            return $(this).data('username') === data.username;
+          });
+        };
+
+        const removeFromUsersBox = (data) => {
+        //const removeFromUsersBox = (userName) => {
+          getAlreadyAddedUsers(data).fadeOut(function () {
+            $(this).remove();
+          });
+          // if (!inboxPeople || document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`)) {
+          //   document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`).remove();
+          // }
         };
 
         const addParticipantsMessage = (data) => {
@@ -332,9 +342,9 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         // Whenever the server emits 'new message', update the chat body
         socket.on('new message', (data) => {
           addChatMessage(data);
-          if(!isElementVisible($('#chatModal'))) {
+          if(!isElementVisible($('#chatmodal'))) {
             ++unreadMsgs;
-            updateUnreadMsgs();
+            updateUnreadMsgs(unreadMsgs);
           }
         });
 
@@ -344,7 +354,8 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           data.activeUsers.map((user) => {
             users.add(user);
           });
-          addToUsersBox(data.username);
+          // addToUsersBox(data.username);
+          addToUsersBox(data);
           addParticipantsMessage(data);
         });
 
@@ -353,7 +364,8 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           log(data.username + ' poistui');
           addParticipantsMessage(data);
           removeChatTyping(data);
-          removeFromUsersBox(data.username);
+          // removeFromUsersBox(data.username);
+          removeFromUsersBox(data);
         });
 
         // Whenever the server emits 'typing', show the typing message
@@ -420,7 +432,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         //---- Helper functions ----//
         function updateUnreadMsgs(count) {
           //$('#unreadMsgs').text(count);
-          document.querySelector("#unreadMsgs").innerText = count;
+          document.querySelector("#unreadMsgs").innerText = count > 0 ? count : "";
         }
 
         function showLoading(msg) {
@@ -458,19 +470,39 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
         }
 
         // Check if the given element is visible
-        const isElementVisible = (elementName) => {console.log("isElementVisible check"); return elementName.css("display") != "null" && elementName.css("display") != "none"; };
+        const isElementVisible = (elementName) => { return elementName.css("display") != "null" && elementName.css("display") != "none"; };
 
         //Log in when everything is ready
         $(document).ready(function () {
           if (username) {
             setUsername();
 
+            // Focus chat inputbox and create cookie to keep chat open when the the chat is opened
+            $('#chatmodal').on('shown.bs.modal', function () {
+              $.cookie("isChatOpen", 1);
+              unreadMsgs = 0;
+              $('#txtMessage').focus();
+            });
+
+            // Remove isChatOpen-cookie
+            $('#chatmodal').on('hidden.bs.modal', function () {
+              $.removeCookie("isChatOpen");
+            });
+
+            $('#btnChatMinimize').click( () => {
+              hideChat();
+            });
+
             $('#chatBtn').click( () => {
               isChatVisible = !isChatVisible;
               if(isChatVisible) {
                 $('#chatmodal').fadeIn();
+                $.cookie("isChatOpen", 1);
+                unreadMsgs = 0;
+                updateUnreadMsgs(unreadMsgs);
+                $('#txtMessage').focus();
               } else {
-                $('#chatmodal').fadeOut();
+                hideChat();
               }
             });
           }
@@ -480,3 +512,9 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
     });
   });
 });
+
+function hideChat() {
+  $('#chatmodal').fadeOut();
+  $.removeCookie("isChatOpen");
+}
+
