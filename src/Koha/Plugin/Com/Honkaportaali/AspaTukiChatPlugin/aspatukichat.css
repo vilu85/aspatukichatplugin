@@ -9,7 +9,7 @@
 .messages-box, .chat-box {
   max-height: 300px;
   min-height: 150px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .rounded-lg {
@@ -136,7 +136,7 @@ iframe {
 }
 
 #chatusers {
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: 300px;
   margin-bottom: 0px;
 }
