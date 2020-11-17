@@ -161,6 +161,8 @@ gulp.task('minifyAll',gulp.series('styles','scripts','html'));
 //gulp.task( 'default', ['scripts', 'styles', 'automate'] );
 gulp.task('default',gulp.series('scripts','styles','html','automate'));
 
+gulp.task( 'build source zip', gulp.series( 'buildSources', 'zip' ));
+
 gulp.task( 'build', gulp.series( 'buildSources', 'minifyAll', 'zip' ));
 
 gulp.task( 'build release', gulp.series( 'buildSources', 'minifyAll', 'obfuscate', 'zip' ));
