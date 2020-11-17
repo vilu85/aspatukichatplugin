@@ -50,9 +50,10 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           </li></ul>');
 
         // Initialize socket
-        var socket = io.connect('http://lainaamo-intra.ouka.fi', {
-          'path': '/chat/socket.io'
-        });
+        //var socket = io.connect('http://lainaamo-intra.ouka.fi', {
+        //  'path': '/chat/socket.io'
+        //});
+        var socket = io();
 
         // Create usermap
         var users = new Set();
