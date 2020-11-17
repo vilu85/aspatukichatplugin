@@ -7,6 +7,9 @@
 node_modules/
 package-lock.json
 
+# Building directory
+build/
+
 # Compiled Java class files
 *.class
 
