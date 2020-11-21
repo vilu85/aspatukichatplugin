@@ -139,7 +139,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
 
         // Log a message
         const log = (message, options) => {
-          var $el = $('<li>').addClass('log').text(message);
+          var $el = $('<li>').addClass('log').addClass('shadow').text(message);
           addMessageElement($el, options);
         };
 
