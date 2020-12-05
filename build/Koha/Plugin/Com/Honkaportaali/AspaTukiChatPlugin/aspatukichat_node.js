@@ -4,6 +4,23 @@ var prog;
 var error;
 var motd;
 var isChatVisible = false;
+class cachedMessage {
+  constructor(userIn, contentIn, timeIn) {
+    this.user = userIn;
+    this.content = contentIn;
+    this.time = timeIn;
+  }
+
+  getData() {
+    var data = {
+      'username' : this.user,
+      'message' : this.content,
+      'time' : this.time
+    };
+
+    return data;
+  }
+}
 $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/jquery.pageslide.min.js', function () {
   $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", function (html) {
     $('#changelanguage').before(html);
@@ -50,9 +67,10 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           </li></ul>');
 
         // Initialize socket
-        var socket = io.connect('http://lainaamo-intra.ouka.fi', {
-          'path': '/chat/socket.io'
-        });
+        //var socket = io.connect('http://lainaamo-intra.ouka.fi', {
+        //  'path': '/chat/socket.io'
+        //});
+        var socket = io();
 
         // Create usermap
         var users = new Set();
@@ -138,8 +156,13 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
 
         // Log a message
         const log = (message, options) => {
-          var $el = $('<li>').addClass('log').text(message);
+          var $el = $('<li>').addClass('log').addClass('shadow').text(message);
           addMessageElement($el, options);
+        };
+
+        // Adds a cached chat message to the message list
+        const addCachedMessage = (cachedMsg) => {
+          addChatMessage(cachedMsg.getData(), { 'time' : cachedMsg.time });
         };
 
         // Adds the visual chat message to the message list
@@ -162,7 +185,7 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
           var $messageBubble = $('<div class="bg-light shadow-sm rounded px-3 mb-1 padding-6"/>');
           var $messageBubbleContent = $('<p>')
             .text(data.message);
-          const time = new Date();
+          const time = (options.time ?  new Date(options.time) : new Date());
           //const formattedTime = time.toLocaleString("en-US", { hour: "numeric", minute: "numeric" });
           const formattedTime = convertTimeToEasyString(time);
           var $timeInfo = $('<p class="text-muted mx-8"/>')
@@ -339,6 +362,11 @@ $.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/
             };
             addToUsersBox(existingUserData);
           });
+          if(data.messageCache) {
+            data.messageCache.map((msgEntry) => {
+              addCachedMessage(new cachedMessage(msgEntry.user, msgEntry.content, msgEntry.time));
+            });
+          }
           addToUsersBox(data);
           // Display the welcome message
           var message = "AspaTukiChat – ";

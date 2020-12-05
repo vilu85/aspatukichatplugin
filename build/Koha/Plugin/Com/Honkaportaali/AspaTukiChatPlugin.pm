@@ -33,7 +33,7 @@ our $metadata = {
     author => 'Ville Perkkio',
     description => 'This plugin adds chat for intranet',
     date_authored   => '2020-05-21',
-    date_updated    => '2020-11-09',
+    date_updated    => '2020-12-05',
     minimum_version => '19.05.00.000',
     maximum_version => undef,
     version         => $VERSION,
@@ -607,6 +607,12 @@ sub intranet_js {
         my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.js')];
         my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/aspatukichat_node.js')];
         my $pageslide_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/jquery.pageslide.min.js')];
+
+        my $chat_configuration = q[
+            const is_chat_enabled = ] . $self->isChatEnabled() .q[;
+            const motd = '] . $self->retrieve_data('motd') . q[';
+            const host = '] . $self->retrieve_data('host') . q[';
+        ];
 
         return q|
             <script>| . $socketio_js . q|</script>

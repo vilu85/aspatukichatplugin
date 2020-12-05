@@ -150,3 +150,10 @@ div#chatmodal {
   left: auto;
   z-index: 9999;
 }
+
+li.log {
+  margin: 10px;
+  padding: 10px;
+  display: list-item;
+  list-style-type: none;
+}
