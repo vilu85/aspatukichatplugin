@@ -34,6 +34,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
         '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
       ];
+      var MAX_HEIGHT = 300;
 
       // Initialize variables
       var $window = $(window);
@@ -541,6 +542,21 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
             } else {
               hideChat();
             }
+          });
+
+          $('#btnChatMaximize').click( () => {
+            var $chatmessages = $("#chatmessages");
+            var maximize = $chatmessages.height() <= MAX_HEIGHT;
+
+            if(maximize) {
+              $('#btnChatMaximize').children().removeClass("fa-window-maximize");
+              $('#btnChatMaximize').children().addClass("fa-window-restore");
+              $chatmessages.css("max-height", this.window.innerHeight + "px");
+            } else {
+              $('#btnChatMaximize').children().removeClass("fa-window-restore");
+              $('#btnChatMaximize').children().addClass("fa-window-maximize");
+              $chatmessages.css("max-height", MAX_HEIGHT + "px");
+            }          
           });
         }
       });
