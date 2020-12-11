@@ -319,6 +319,8 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       const showNotify = (data) => {
         Lobibox.notify('default', {
           continueDelayOnInactiveTab: true,
+          title: false,
+          size: 'mini',
           msg: data.username + ': ' + data.message
         });
       };
