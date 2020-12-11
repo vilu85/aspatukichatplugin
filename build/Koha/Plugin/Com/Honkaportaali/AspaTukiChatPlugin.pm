@@ -595,6 +595,7 @@ sub intranet_head {
     
     return q|
         <link rel="stylesheet" href="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/aspatukichat.css"/>
+        <link rel="stylesheet" href="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/lobibox.min.css"/>
     |;
 }
 
@@ -605,19 +606,19 @@ sub intranet_js {
 
     if($userenv and $userenv->{flags} > 0) {
         my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.js')];
-        my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/aspatukichat_node.js')];
-        my $pageslide_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/pageslide/jquery.pageslide.min.js')];
+        my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/aspatukichat_node.js');];
+        my $notification_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/notifications.min.js')];
 
         my $chat_configuration = q[
-            const is_chat_enabled = ] . $self->isChatEnabled() .q[;
-            const motd = '] . $self->retrieve_data('motd') . q[';
-            const host = '] . $self->retrieve_data('host') . q[';
+            var is_chat_enabled = ] . $self->isChatEnabled() .q[;
+            var motd = '] . $self->retrieve_data('motd') . q[';
+            var host = '] . $self->retrieve_data('host') . q[';
         ];
 
         return q|
             <script>| . $socketio_js . q|</script>
-            <script>| . $aspatukichat_js . q|</script>
-            <script>| . $pageslide_js . q|</script>
+            <script>| . $notification_js . q|</script>
+            <script>| . $chat_configuration . $aspatukichat_js . q|</script>
         |;
     }
 

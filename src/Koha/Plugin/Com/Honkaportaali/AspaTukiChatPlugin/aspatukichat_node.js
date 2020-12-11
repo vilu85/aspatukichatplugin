@@ -315,6 +315,14 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         return COLORS[index];
       };
 
+      // Shows notification popup with the message
+      const showNotify = (data) => {
+        Lobibox.notify('default', {
+          continueDelayOnInactiveTab: true,
+          msg: data.username + ': ' + data.message
+        });
+      };
+
       // Keyboard events
 
       $window.keydown(event => {
@@ -383,6 +391,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         if(!isElementVisible($('#chatmodal'))) {
           ++unreadMsgs;
           updateUnreadMsgs(unreadMsgs);
+          showNotify(data);
         }
       });
 
@@ -551,7 +560,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
             if(maximize) {
               $('#btnChatMaximize').children().removeClass("fa-window-maximize");
               $('#btnChatMaximize').children().addClass("fa-window-restore");
-              $chatmessages.css("max-height", this.window.innerHeight + "px");
+              $chatmessages.css("max-height", window.innerHeight + "px");
             } else {
               $('#btnChatMaximize').children().removeClass("fa-window-restore");
               $('#btnChatMaximize').children().addClass("fa-window-maximize");
