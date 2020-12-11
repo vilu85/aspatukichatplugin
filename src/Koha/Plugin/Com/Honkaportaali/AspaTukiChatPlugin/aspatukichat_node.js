@@ -57,6 +57,15 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       var $currentInput;// = $usernameInput.focus();
       var unreadMsgs = 0;
 
+      const generateHash = (len) => {
+        var symbols = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        var hash = '';
+        for (var i = 0; i < len; i++) {
+          var symIndex = Math.floor(Math.random() * symbols.length);
+          hash += symbols.charAt(symIndex);
+        }
+        return hash;
+      };
       // // Add chat button (old style)
       // $('#i18nMenu').after('<ul class="nav nav-tabs navbar-nav navbar navbar-right"> \
       //   <li><button id="chatBtn" class="btn btn-primary dropdown-toggle dropdown" type="button">Support&nbsp;<span id="unreadMsgs" class="badge"></span><span class="caret"></span></button> \
@@ -72,7 +81,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       //  'path': '/chat/socket.io'
       //});
       var socket = io();
-      
+
       // Create usermap
       var users = new Set();
 
@@ -132,7 +141,11 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           $chatPage.show();
           $loginPage.off('click');
           $currentInput = $inputMessage.focus();
-
+          // Check and generate userid cookie if needed
+          // TODO: Implement this: https://stackoverflow.com/questions/22594897/socket-io-disconnects-when-refreshed
+          if (!/\buser_id=/.test(document.cookie)) { //if no 'user_id' in cookies
+            document.cookie = 'user_id=' + generateHash(32);  //add cookie 'user_id'
+          }
           // Tell the server your username
           socket.emit('add user', username);
         }
