@@ -608,6 +608,7 @@ sub intranet_js {
         my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.js')];
         my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/aspatukichat_node.js');];
         my $notification_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/notifications.min.js')];
+        my $html2canvas_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/html2canvas.min.js')];
 
         my $chat_configuration = q[
             var is_chat_enabled = ] . $self->isChatEnabled() .q[;
@@ -618,7 +619,7 @@ sub intranet_js {
         return q|
             <script>| . $socketio_js . q|</script>
             <script>| . $notification_js . q|</script>
-            <script>| . $chat_configuration . $aspatukichat_js . q|</script>
+            <script>| . $chat_configuration . $aspatukichat_js . $html2canvas_js . q|</script>
         |;
     }
 

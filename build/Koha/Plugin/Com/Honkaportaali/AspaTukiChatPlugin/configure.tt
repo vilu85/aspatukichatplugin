@@ -1,8 +1,8 @@
 [% INCLUDE 'doc-head-open.inc' %]
 <title>Koha: AspaTukiChat Plugin: Configuration</title>
 [% INCLUDE 'doc-head-close.inc' %]
-<script src="[% PLUGIN_PATH %]/configure.js"></script>
-<link rel="stylesheet" href="[% PLUGIN_PATH %]/configure.css" />
+<script src="[% PLUGIN_PATH %]/js/configure.js"></script>
+<link rel="stylesheet" href="[% PLUGIN_PATH %]/css/configure.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 </head>
 <body>
@@ -116,6 +116,6 @@
 	</form>
 	<!-- /.Rename modal -->
 		
-	<script>$.getScript('[% PLUGIN_PATH %]/configure.js');</script>
+	<script>$.getScript('[% PLUGIN_PATH %]/js/configure.js');</script>
 	[% INCLUDE 'intranet-bottom.inc' %]
 		

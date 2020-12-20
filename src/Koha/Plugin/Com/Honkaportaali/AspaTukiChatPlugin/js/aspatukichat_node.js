@@ -4,6 +4,7 @@ var prog;
 var error;
 var motd;
 var isChatVisible = false;
+var screenshot;
 class cachedMessage {
   constructor(userIn, contentIn, timeIn) {
     this.user = userIn;
@@ -529,6 +530,14 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           return date + ' ' + month + ', ' + hour + ':' + min;
         else
           return date + ' ' + month + ' ' + year + ', ' + hour + ':' + min;
+      }
+
+      // Screenshot capture
+      function takeScreenshot() {
+        html2canvas(document.body).then(function(canvas) {
+          screenshot = canvas;
+          document.body.appendChild(canvas);
+        });
       }
 
       // Check if the given element is visible

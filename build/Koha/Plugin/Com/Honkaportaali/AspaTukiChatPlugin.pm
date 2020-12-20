@@ -584,7 +584,7 @@ sub opac_head {
     my ( $self ) = @_;
 
     #return q|
-    #    <link rel="stylesheet" href="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/dist/css/lobibox.min.css"/>
+    #    <link rel="stylesheet" href="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/css/lobibox.min.css"/>
     #|;
     
     return "";
@@ -594,8 +594,8 @@ sub intranet_head {
     my ( $self ) = @_;
     
     return q|
-        <link rel="stylesheet" href="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/aspatukichat.css"/>
-        <link rel="stylesheet" href="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/lobibox.min.css"/>
+        <link rel="stylesheet" href="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/css/aspatukichat.css"/>
+        <link rel="stylesheet" href="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/css/lobibox.min.css"/>
     |;
 }
 
@@ -606,8 +606,9 @@ sub intranet_js {
 
     if($userenv and $userenv->{flags} > 0) {
         my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.js')];
-        my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/aspatukichat_node.js');];
-        my $notification_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/notifications.min.js')];
+        my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/aspatukichat_node.js');];
+        my $notification_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/notifications.min.js')];
+        my $html2canvas_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/html2canvas.min.js')];
 
         my $chat_configuration = q[
             var is_chat_enabled = ] . $self->isChatEnabled() .q[;
@@ -618,7 +619,7 @@ sub intranet_js {
         return q|
             <script>| . $socketio_js . q|</script>
             <script>| . $notification_js . q|</script>
-            <script>| . $chat_configuration . $aspatukichat_js . q|</script>
+            <script>| . $chat_configuration . $aspatukichat_js . $html2canvas_js . q|</script>
         |;
     }
 
