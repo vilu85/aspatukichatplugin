@@ -191,7 +191,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         // Other messages
         var $messageBodyDiv2 = $('<div class="media w-100 mb-3"/>');
         var $mediaLeft = $('<div class="media-left"/>');
-        var $profilePic = $('<img class="img-thumbnail media-object" src="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/user.svg" width="50px" />');
+        var $profilePic = $('<img class="img-thumbnail media-object" src="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/img/user.svg" width="50px" />');
         var $senderInfo = $('<p class="media-object text-center text-muted"/>')
           .text(data.username)
           .css('color', getUsernameColor(data.username));
