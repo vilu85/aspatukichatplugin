@@ -339,6 +339,12 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         });
       };
 
+      // Send image to server
+      const sendImage = (image) => {
+        // Server side
+        socket.emit('image', image.toString('base64')); // image should be a buffer
+      };
+
       // Keyboard events
 
       $window.keydown(event => {
@@ -464,6 +470,18 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           message: data.data
         };
         addChatMessage(data2);
+      });
+
+      // Receive images
+      socket.on('image', image => {
+        console.log("socket.on image event called");
+        // create image with
+        const img = new Image();
+        // change image type to whatever you use, or detect it in the backend 
+        // and send it if you support multiple extensions
+        img.src = `data:image/jpg;base64,${image}`; 
+        // Insert it into the DOM
+        //TODO: Do something with image
       });
 
       //---- Ajax bridge to Perl side ----//
