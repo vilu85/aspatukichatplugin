@@ -67,17 +67,13 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         }
         return hash;
       };
-      // // Add chat button (old style)
-      // $('#i18nMenu').after('<ul class="nav nav-tabs navbar-nav navbar navbar-right"> \
-      //   <li><button id="chatBtn" class="btn btn-primary dropdown-toggle dropdown" type="button">Support&nbsp;<span id="unreadMsgs" class="badge"></span><span class="caret"></span></button> \
-      //   </li></ul>');
 
       // Add chat button
       $('#i18nMenu').after('<ul class="nav nav-tabs navbar-nav navbar navbar-right"> \
         <li><button id="chatBtn" class="btn" type="button"><i class="fa fa-comments"></i><span id="unreadMsgs" class="badge"></span></button> \
         </li></ul>');
 
-      // Initialize socket
+      // Initialize socket in v1.0
       //var socket = io.connect('http://lainaamo-intra.ouka.fi', {
       //  'path': '/chat/socket.io'
       //});
@@ -86,24 +82,16 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       // Create usermap
       var users = new Set();
 
-      // const addToUsersBox = (userName) => {
       const addToUsersBox = (data) => {
         var $alreadyAddedUsers = getAlreadyAddedUsers(data);
         if ($alreadyAddedUsers.length !== 0) {
           $alreadyAddedUsers.remove();
         }
-        // if (!inboxPeople || !!document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`)) {
-        //   return;
-        // }
-
-        // const userBox = `<li id="${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry" class="list-group-item"><span>${userName}</span></li>`;
-        //const userBox = `<li class="userentry" id="${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry" class="list-group-item"><span>${userName}</span></li>`;
-        //.data('username', data.username)
+        
         var $userentry = $('<li class="userentry list-group-item">')
               .data('username', data.username)
               .text(data.username);
         $userlist.append($userentry);
-        // inboxPeople.innerHTML += userBox;
       };
 
       const getAlreadyAddedUsers = (data) => {
@@ -113,13 +101,9 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       };
 
       const removeFromUsersBox = (data) => {
-      //const removeFromUsersBox = (userName) => {
         getAlreadyAddedUsers(data).fadeOut(function () {
           $(this).remove();
         });
-        // if (!inboxPeople || document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`)) {
-        //   document.querySelector(`#${userName.trim().replaceAll(" ", "").toLocaleLowerCase()}-userentry`).remove();
-        // }
       };
 
       const addParticipantsMessage = (data) => {
@@ -201,7 +185,6 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         var $messageBubbleContent = $('<p>')
           .text(data.message);
         const time = (options.time ?  new Date(options.time) : new Date());
-        //const formattedTime = time.toLocaleString("en-US", { hour: "numeric", minute: "numeric" });
         const formattedTime = convertTimeToEasyString(time);
         var $timeInfo = $('<p class="text-muted mx-8"/>')
           .text(formattedTime);
@@ -254,11 +237,13 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         });
       };
 
-      // Adds a message element to the messages and scrolls to the bottom
-      // el - The element to add as a message
-      // options.fade - If the element should fade-in (default = true)
-      // options.prepend - If the element should prepend
-      //   all other messages (default = false)
+      /**
+       * Adds a message element to the messages and scrolls to the bottom
+       * @param {*} el The element to add as a message
+       * @param {*} options options.fade - If the element should fade-in (default = true)
+       *                    options.prepend - If the element should prepend
+       *                                      all other messages (default = false)
+       */
       const addMessageElement = (el, options) => {
         var $el = $(el);
 
@@ -405,6 +390,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           prepend: true
         });
         addParticipantsMessage(data);
+        restoreChatState();
       });
 
       // Whenever the server emits 'new message', update the chat body
@@ -423,7 +409,6 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         data.activeUsers.map((user) => {
           users.add(user);
         });
-        // addToUsersBox(data.username);
         addToUsersBox(data);
         addParticipantsMessage(data);
       });
@@ -433,7 +418,6 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         log(data.username + ' poistui');
         addParticipantsMessage(data);
         removeChatTyping(data);
-        // removeFromUsersBox(data.username);
         removeFromUsersBox(data);
       });
 
@@ -512,7 +496,6 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
 
       //---- Helper functions ----//
       function updateUnreadMsgs(count) {
-        //$('#unreadMsgs').text(count);
         document.querySelector("#unreadMsgs").innerText = count > 0 ? count : "";
       }
 
@@ -539,7 +522,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         var month = months[a.getMonth()];
         var date = a.getDate();
         var hour = a.getHours();
-        var min = a.getMinutes();
+        var min = a.getMinutes() < 10 ? a.getMinutes() + "0" : a.getMinutes();
         if (a.setHours(0, 0, 0, 0) == today.setHours(0, 0, 0, 0))
           return 'tänään, ' + hour + ':' + min;
         else if (a.setHours(0, 0, 0, 0) == yesterday.setHours(0, 0, 0, 0))
@@ -622,3 +605,9 @@ function hideChat() {
   $.removeCookie("isChatOpen");
 }
 
+function restoreChatState() {
+  isChatVisible = ($.cookie("isChatOpen") == 1);
+  if(isChatVisible) {
+    $('#chatmodal').show();
+  }
+}
