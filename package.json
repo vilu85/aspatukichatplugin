@@ -25,6 +25,7 @@
     "gulp-autoprefixer": "^7.0.1",
     "gulp-csso": "^4.0.1",
     "gulp-htmlmin": "^5.0.1",
+    "gulp-replace": "^1.0.0",
     "gulp-terser": "^1.4.1",
     "gulp-zip": "^5.0.2"
   },

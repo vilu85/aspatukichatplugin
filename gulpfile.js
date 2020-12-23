@@ -9,6 +9,7 @@ const del = require('del');
 const zip = require('gulp-zip');
 const javascriptObfuscator = require('gulp-javascript-obfuscator');
 const fs = require('fs');
+const replace = require('gulp-replace');
 //const bump = require('gulp-bump');
 //const args = require('yargs').argv;
 //const babel = require('gulp-babel');
@@ -176,7 +177,7 @@ function bumpPerlFileVersion(opt) {
       break;
     default:
       console.error("Version increment type %d was missing!", opt);
-      break;
+      return false;
   }
 
   var periodString = ".";
@@ -186,7 +187,7 @@ function bumpPerlFileVersion(opt) {
                          vArray.vPatch;
 
   console.info("Changing perl module version %s -> %s", oldVersionNumber, newVersionNumber);
-  gulp.src(['./src/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin.pm'])
+  return gulp.src(['./src/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin.pm'])
       .pipe(replace(/our \$VERSION = "(.*)"/g, newVersionNumber))
       .pipe(gulp.dest('./'));
 }
