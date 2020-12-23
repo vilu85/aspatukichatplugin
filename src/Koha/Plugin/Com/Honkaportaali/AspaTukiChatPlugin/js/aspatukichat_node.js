@@ -6,17 +6,19 @@ var motd;
 var isChatVisible = false;
 var screenshot;
 class cachedMessage {
-  constructor(userIn, contentIn, timeIn) {
+  constructor(userIn, contentIn, timeIn, imageIn = undefined) {
     this.user = userIn;
     this.content = contentIn;
     this.time = timeIn;
+    this.image = imageIn;
   }
 
   getData() {
     var data = {
       'username' : this.user,
       'message' : this.content,
-      'time' : this.time
+      'time' : this.time,
+      'image' : (this.image || undefined)
     };
 
     return data;
@@ -49,6 +51,9 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       const inboxPeople = document.querySelector("#chatusers"); // User list
       var $userlist = $('#chatusers');
       const chatModal = $('#chatmodal'); // Chat modal
+      var $btnScreenshot = $('#btnScreenshot'); // Screenshot capture button
+      var $imgviewermodal = $('#imgViewerModal'); // Modal for viewing images on fullscreen
+      var screenshot; // Variable where the last screenshot is saved
 
       // Prompt for setting a username
       var username = $(".loggedinusername").html();
@@ -146,10 +151,21 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           $inputMessage.val('');
           addChatMessage({
             username: username,
-            message: message
+            message: message,
+            image: (screenshot !== undefined ? screenshot : undefined)
           });
-          // tell server to execute 'new message' and send along one parameter
-          socket.emit('new message', message);
+
+          if(screenshot !== undefined) {
+            var messageWithImage = {
+              message : message,
+              image : screenshot
+            };
+            socket.emit('new image message', messageWithImage);
+            screenshot = undefined;
+          } else {
+            // tell server to execute 'new message' and send along one parameter
+            socket.emit('new message', message);
+          }
         }
       };
 
@@ -197,6 +213,16 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         var $ownTimeInfo = $('<p class="text-muted">')
           .text(formattedTime);
 
+        // Images
+        var $imageDiv = '';
+        if(data.image !== undefined) {
+          const img = new Image();
+          img.src = `${data.image}`;
+          var $img = $(img).addClass("screenshot");
+          $imageDiv = $('<span class="screenshot">')
+            .append($img);
+        }
+
         var $messageDiv;
 
         if(data.typing) {
@@ -214,10 +240,10 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           if (data.username != username) {
             $messageDiv = $messageBodyDiv2.append(
               $mediaLeft.append($profilePic, $senderInfo),
-              $mediaBody.append($messageBubble.append($messageBubbleContent), $timeInfo));
+              $mediaBody.append($messageBubble.append($imageDiv, $messageBubbleContent), $timeInfo));
           } else {
             $messageDiv = $ownMessageBodyDiv2.append(
-              $mediaBody.append($ownMessageBubble.append($ownMessageBubbleContent), $timeInfo));
+              $mediaBody.append($ownMessageBubble.append($imageDiv, $ownMessageBubbleContent), $timeInfo));
           }
         }
         addMessageElement($messageDiv, options);
@@ -365,6 +391,26 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         $inputMessage.focus();
       });
 
+      // Take screenshot and save it in 'screenshot' variable
+      $btnScreenshot.click(() => {
+        html2canvas(document.body).then(function(canvas) {
+          var screenshot1 = canvas;
+          var screenshot2 = screenshot1.toDataURL();
+          screenshot = screenshot2.toString('base64');
+          //document.body.appendChild(canvas);
+          console.log("Screenshot captured and saved in variable 'screenshot'");
+          // sendImage(screenshot.toDataURL());
+        });
+      });
+    
+      // Show image viewer modal when clicking on the any screenshot image
+      $messages.click((e) => {
+        if(e.target.className == "screenshot") {
+          $('#imgViewer').html('').append( $(e.target).clone().removeClass('screenshot') );
+          $imgviewermodal.css("display", "block");
+        }
+      });
+
       // Socket events
 
       // Whenever the server emits 'login', log the login message
@@ -380,7 +426,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         });
         if(data.messageCache) {
           data.messageCache.map((msgEntry) => {
-            addCachedMessage(new cachedMessage(msgEntry.user, msgEntry.content, msgEntry.time));
+            addCachedMessage(new cachedMessage(msgEntry.user, msgEntry.content, msgEntry.time, msgEntry.image));
           });
         }
         addToUsersBox(data);
@@ -595,6 +641,11 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         }
       });
 
+      $(document).ready(function(){
+        $('[data-bs-click-animate]')
+          .mousedown( function(){ var elem = $(this); elem.addClass('animated ' + elem.attr('data-bs-click-animate')); })
+          .mouseup( function(){ var elem = $(this); elem.removeClass('animated ' + elem.attr('data-bs-click-animate')); });
+      });
     });
   });
 });
