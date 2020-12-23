@@ -8,6 +8,7 @@ const htmlmin = require('gulp-htmlmin');
 const del = require('del');
 const zip = require('gulp-zip');
 const javascriptObfuscator = require('gulp-javascript-obfuscator');
+const fs = require('fs');
 //const bump = require('gulp-bump');
 //const args = require('yargs').argv;
 //const babel = require('gulp-babel');
@@ -29,8 +30,14 @@ const AUTOPREFIXER_BROWSERS = [
   'bb >= 10'
 ];
 
+const type = {
+  major : 1,
+  minor : 2,
+  patch : 3
+};
+
 gulp.task('styles', function () {
-  return gulp.src( cssSrc )
+  return gulp.src( [cssSrc, '!*min.css'] )
                 // Auto-prefix css styles for cross browser compatibility
                 //.pipe(autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
                 .pipe(autoprefixer())
@@ -41,7 +48,7 @@ gulp.task('styles', function () {
 });
 
 gulp.task( 'scripts', function() {
-  return  gulp.src( jsSrc )
+  return  gulp.src( [jsSrc, '!*min.js'] )
                 .pipe( terser() )
                 .pipe( gulp.dest( './build' ) );
 });
@@ -123,34 +130,66 @@ gulp.task( 'automate', function() {
 //                 .pipe(gulp.dest('./'));
 // });
 
-// gulp.task('increment-version', function(){
-//   //docString is the file from which you will get your constant string
-//   var docString = fs.readFileSync('./someFolder/constants.js', 'utf8');
+gulp.task('bump major', () => {
+  return bumpPerlFileVersion(type.major);
+});
 
-//   //The code below gets your semantic v# from docString
-//   var versionNumPattern=/'someTextPreceedingVNumber', '(.*)'/; //This is just a regEx with a capture group for version number
-//   var vNumRexEx = new RegExp(versionNumPattern);
-//   var oldVersionNumber = (vNumRexEx.exec(docString))[1]; //This gets the captured group
+gulp.task('bump minor', () => {
+  return bumpPerlFileVersion(type.minor);
+});
 
-//   //...Split the version number string into elements so you can bump the one you want
-//   var versionParts = oldVersionNumber.split('.');
-//   var vArray = {
-//       vMajor : versionParts[0],
-//       vMinor : versionParts[1],
-//       vPatch : versionParts[2]
-//   };
+gulp.task('bump patch', () => {
+  return bumpPerlFileVersion(type.patch);
+});
 
-//   vArray.vPatch = parseFloat(vArray.vPatch) + 1;
-//   var periodString = ".";
+/**
+ * Changes version number from Perl module
+ * @param {type} opt Increment type, possible types: type.major, type.minor and type.patch
+ */
+function bumpPerlFileVersion(opt) {
+  //docString is the file from which you will get your constant string
+  var docString = fs.readFileSync('./src/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin.pm', 'utf8');
 
-//   var newVersionNumber = vArray.vMajor + periodString +
-//                          vArray.vMinor+ periodString +
-//                          vArray.vPatch;
+  //The code below gets your semantic v# from docString
+  var versionNumPattern=/our \$VERSION = "(.*)"/; //This is just a regEx with a capture group for version number
+  var vNumRexEx = new RegExp(versionNumPattern);
+  var oldVersionNumber = (vNumRexEx.exec(docString))[1]; //This gets the captured group
 
-//   gulp.src(['./someFolder/constants.js'])
-//       .pipe(replace(/'someTextPreceedingVNumber', '(.*)'/g, newVersionNumber))
-//       .pipe(gulp.dest('./someFolder/'));
-// });
+  //...Split the version number string into elements so you can bump the one you want
+  var versionParts = oldVersionNumber.split('.');
+  var vArray = {
+      vMajor : versionParts[0],
+      vMinor : versionParts[1],
+      vPatch : versionParts[2]
+  };
+
+  opt = opt || {};  
+  switch (opt) {
+    case type.major:
+      vArray.vMajor = parseFloat(vArray.vMajor) + 1;
+      break;
+    case type.minor:
+      vArray.vMinor = parseFloat(vArray.vMinor) + 1;
+      break;
+    case type.patch:
+      vArray.vPatch = parseFloat(vArray.vPatch) + 1;
+      break;
+    default:
+      console.error("Version increment type %d was missing!", opt);
+      break;
+  }
+
+  var periodString = ".";
+
+  var newVersionNumber = vArray.vMajor + periodString +
+                         vArray.vMinor + periodString +
+                         vArray.vPatch;
+
+  console.info("Changing perl module version %s -> %s", oldVersionNumber, newVersionNumber);
+  gulp.src(['./src/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin.pm'])
+      .pipe(replace(/our \$VERSION = "(.*)"/g, newVersionNumber))
+      .pipe(gulp.dest('./'));
+}
 
 // Clean output directory
 gulp.task('clean', () => del(['dist', 'build']));
@@ -161,8 +200,8 @@ gulp.task('minifyAll',gulp.series('styles','scripts','html'));
 //gulp.task( 'default', ['scripts', 'styles', 'automate'] );
 gulp.task('default',gulp.series('scripts','styles','html','automate'));
 
-gulp.task( 'build source zip', gulp.series( 'buildSources', 'zip' ));
+gulp.task( 'build source zip', gulp.series( 'bump patch', 'buildSources', 'minifyAll', 'zip' ));
 
-gulp.task( 'build', gulp.series( 'buildSources', 'minifyAll', 'zip' ));
+gulp.task( 'build', gulp.series( 'bump minor', 'buildSources', 'minifyAll', 'zip' ));
 
-gulp.task( 'build release', gulp.series( 'buildSources', 'minifyAll', 'obfuscate', 'zip' ));
+gulp.task( 'build release', gulp.series( 'bump minor', 'buildSources', 'minifyAll', 'obfuscate', 'zip' ));
