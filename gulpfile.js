@@ -143,17 +143,6 @@ gulp.task('bump patch', () => {
   return bumpPerlFileVersion(type.patch);
 });
 
-function updatePerlModuleDate() {
-  const date = new Date();
-  var dateString = date.getFullYear() + '-' +
-    (date.getMonth() + 1).toString().padStart(2, '0') + '-' +
-    date.getDate().toString().padStart(2, '0');
-
-  return gulp.src(['./src/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin.pm'])
-      .pipe(replace(/our \$DATE_UPDATED = "(.*)"/g, 'our $VERSION = "' + dateString + '"'))
-      .pipe(gulp.dest('./src/Koha/Plugin/Com/Honkaportaali/'));
-}
-
 /**
  * Changes version number from Perl module
  * @param {type} opt Increment type, possible types: type.major, type.minor and type.patch
@@ -198,9 +187,15 @@ function bumpPerlFileVersion(opt) {
                          vArray.vPatch;
 
   console.info("Changing perl module version %s -> %s", oldVersionNumber, newVersionNumber);
+  const date = new Date();
+  var dateString = date.getFullYear() + '-' +
+    (date.getMonth() + 1).toString().padStart(2, '0') + '-' +
+    date.getDate().toString().padStart(2, '0');
+
   return gulp.src(['./src/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin.pm'])
       .pipe(replace(/our \$VERSION = "(.*)"/g, 'our $VERSION = "' + newVersionNumber + '"'))
-      .pipe(gulp.dest('./src/Koha/Plugin/Com/Honkaportaali/')) && updatePerlModuleDate();
+      .pipe(replace(/our \$DATE_UPDATED = "(.*)"/g, 'our $DATE_UPDATED = "' + dateString + '"'))
+      .pipe(gulp.dest('./src/Koha/Plugin/Com/Honkaportaali/'));
 }
 
 // Clean output directory
