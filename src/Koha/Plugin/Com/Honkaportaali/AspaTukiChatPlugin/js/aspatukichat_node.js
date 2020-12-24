@@ -411,6 +411,16 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         }
       });
 
+      // Close image viewer modal when clicking on 'X' button
+      $('.imgclose').click(() => {
+        $imgviewermodal.css("display", "none");
+      });
+
+      // Close image viewer modal when clicking anywhere in window
+      $imgviewermodal.click(()=>{
+        $imgviewermodal.css("display", "none");
+      });
+
       // Socket events
 
       // Whenever the server emits 'login', log the login message
