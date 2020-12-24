@@ -1,5 +1,0 @@
-<script>
-    const is_chat_enabled = [% is_chat_enabled %];
-    const motd = '[% motd %]';
-    const host = '[% host %]';
-</script>
