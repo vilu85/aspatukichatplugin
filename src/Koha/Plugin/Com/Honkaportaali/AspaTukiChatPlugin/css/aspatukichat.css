@@ -191,7 +191,7 @@ img.screenshot {
   background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
 }
 
-.modal-content {
+.imgmodal-content {
   margin: auto;
   display: block;
   width: 80%;
@@ -211,7 +211,7 @@ img.screenshot {
 }
 
 /* Add Animation */
-.modal-content, #caption {  
+.imgmodal-content, #caption {  
   -webkit-animation-name: zoom;
   -webkit-animation-duration: 0.6s;
   animation-name: zoom;
@@ -248,7 +248,7 @@ img.screenshot {
 
 /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 700px){
-  .modal-content {
+  .imgmodal-content {
     width: 100%;
   }
 }
