@@ -143,6 +143,17 @@ gulp.task('bump patch', () => {
   return bumpPerlFileVersion(type.patch);
 });
 
+function updatePerlModuleDate() {
+  const date = new Date();
+  var dateString = date.getFullYear() + '-' +
+    (date.getMonth() + 1).toString().padStart(2, '0') + '-' +
+    date.getDate().toString().padStart(2, '0');
+
+  return gulp.src(['./src/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin.pm'])
+      .pipe(replace(/our \$DATE_UPDATED = "(.*)"/g, 'our $VERSION = "' + dateString + '"'))
+      .pipe(gulp.dest('./src/Koha/Plugin/Com/Honkaportaali/'));
+}
+
 /**
  * Changes version number from Perl module
  * @param {type} opt Increment type, possible types: type.major, type.minor and type.patch
@@ -188,8 +199,8 @@ function bumpPerlFileVersion(opt) {
 
   console.info("Changing perl module version %s -> %s", oldVersionNumber, newVersionNumber);
   return gulp.src(['./src/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin.pm'])
-      .pipe(replace(/our \$VERSION = "(.*)"/g, newVersionNumber))
-      .pipe(gulp.dest('./'));
+      .pipe(replace(/our \$VERSION = "(.*)"/g, 'our $VERSION = "' + newVersionNumber + '"'))
+      .pipe(gulp.dest('./src/Koha/Plugin/Com/Honkaportaali/')) && updatePerlModuleDate();
 }
 
 // Clean output directory
@@ -201,8 +212,8 @@ gulp.task('minifyAll',gulp.series('styles','scripts','html'));
 //gulp.task( 'default', ['scripts', 'styles', 'automate'] );
 gulp.task('default',gulp.series('scripts','styles','html','automate'));
 
-gulp.task( 'build source zip', gulp.series( 'bump patch', 'buildSources', 'minifyAll', 'zip' ));
+gulp.task( 'build source zip', gulp.series( 'clean', 'bump patch', 'buildSources', 'minifyAll', 'zip' ));
 
-gulp.task( 'build', gulp.series( 'bump minor', 'buildSources', 'minifyAll', 'zip' ));
+gulp.task( 'build', gulp.series( 'clean', 'bump minor', 'buildSources', 'minifyAll', 'zip' ));
 
-gulp.task( 'build release', gulp.series( 'bump minor', 'buildSources', 'minifyAll', 'obfuscate', 'zip' ));
+gulp.task( 'build release', gulp.series( 'clean', 'bump minor', 'buildSources', 'minifyAll', 'obfuscate', 'zip' ));
