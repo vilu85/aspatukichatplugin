@@ -10,6 +10,7 @@ use C4::Auth qw/check_cookie_auth haspermission/;
 use Koha::Database;
 use Koha::Libraries;
 use Koha::Patrons;
+use Koha::DateUtils;
 use Cwd qw(abs_path);
 use Data::Dumper;
 use Encode;
@@ -25,7 +26,9 @@ use CGI::Carp qw/fatalsToBrowser/;
 use strict;
 
 ## Here we set our plugin version
-our $VERSION = "1.0.0";
+our $VERSION = "1.0.6";
+## Date updated
+our $DATE_UPDATED = "2020-12-24";
 
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
@@ -33,7 +36,7 @@ our $metadata = {
     author => 'Ville Perkkio',
     description => 'This plugin adds chat for intranet',
     date_authored   => '2020-05-21',
-    date_updated    => '2020-12-05',
+    date_updated    => $DATE_UPDATED,
     minimum_version => '19.05.00.000',
     maximum_version => undef,
     version         => $VERSION,
@@ -605,7 +608,7 @@ sub intranet_js {
     my $userenv = C4::Context->userenv;
 
     if($userenv and $userenv->{flags} > 0) {
-        my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.js')];
+        my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.min.js')];
         my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/aspatukichat_node.js');];
         my $notification_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/notifications.min.js')];
         my $html2canvas_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/html2canvas.min.js')];
@@ -738,7 +741,6 @@ sub install() {
 sub upgrade {
     my ( $self, $args ) = @_;
 
-    ## FIXME: dt_from_string is undefined!
     my $dt = dt_from_string();
     $self->store_data( { last_upgraded => $dt->ymd('-') . ' ' . $dt->hms(':') } );
     
