@@ -7,6 +7,8 @@ use base qw(Koha::Plugins::Base);
 use C4::Auth;
 use C4::Context;
 use C4::Auth qw/check_cookie_auth haspermission/;
+use C4::Languages;
+use C4::Output;
 use Koha::Database;
 use Koha::Libraries;
 use Koha::Patrons;
@@ -26,9 +28,9 @@ use CGI::Carp qw/fatalsToBrowser/;
 use strict;
 
 ## Here we set our plugin version
-our $VERSION = "1.0.6";
+our $VERSION = "1.1.5";
 ## Date updated
-our $DATE_UPDATED = "2020-12-24";
+our $DATE_UPDATED = "2021-01-30";
 
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
@@ -637,7 +639,25 @@ sub configure {
     my ( $self, $args ) = @_;
     my $cgi = $self->{'cgi'};
     my $template   = $self->get_template( { file => 'configure.tt' } );
-    
+    # my ( $template, $borrowernumber, $cookie ) = get_template_and_user(
+    #     {   template_name   => $self->mbf_path( 'configure.tt' ),
+    #         query           => $cgi,
+    #         type            => 'intranet',
+    #         authnotrequired => 0,
+    #         #flagsrequired   => { catalogue => 1 },
+    #         is_plugin       => 1,
+    #     }
+    # );
+
+    my $lang = C4::Languages::getlanguage($cgi);
+    my @lang_split = split /_|-/, $lang;
+
+    $template->param( 
+        lang_dialect => $lang,
+        lang_all => $lang_split[0],
+        plugin_dir => $self->bundle_path
+    );
+
     if($cgi->param('save')) {
         my $newTemplateName    = $cgi->param('template_name');
         my $newTemplateText    = $cgi->param('template_text');
@@ -695,10 +715,13 @@ sub configure {
         sid => $sid,
         uid => $uid,
         session_id => $sessionID,
-        plugins_dir   => $pluginsdir
+        plugins_dir   => $pluginsdir,
+        #metadata => $args->{'metadata'},
+        #class => $args->{'metadata'}->{'class'}
     );
 
     $self->output_html( $template->output() );
+    #output_html_with_http_headers $cgi, $cookie, $template->output;
 }
 
 ## This is the 'install' method. Any database tables or other setup that should

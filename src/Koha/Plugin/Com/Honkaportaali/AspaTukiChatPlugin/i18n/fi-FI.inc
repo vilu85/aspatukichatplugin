@@ -1,0 +1,25 @@
+[% 
+    TOKENS = {
+        home_breadcrumb = "Etusivu"
+        plugins_breadcrumb = "Liitännäiset"
+        plugin_name = "AspaTukiChat lisäosa"
+        configuration = "Asetukset"
+        title_common = "Yleiset"
+        enable_disable = "Ota käyttöön/Poista käytöstä"
+        enable = "Ota käyttöön"
+        disable = "Poista käytöstä"
+        motd = "MOTD viesti"
+        save_changes = "Tallenna muutokset"
+        reset = "Kumoa"
+        title_connection = "Yhteys"
+        socket_host = "Socket isäntä"
+        database = "Tietokanta"
+        purge_messages = "Poista viestit"
+        all = "Kaikki"
+        older_than_a_day = "Vanhemmat kuin 1 päivä"
+        purge_users = "Poista käyttäjät"
+        title_statistics = "Tilastot"
+        messages_in_db = "Viestejä tietokannassa"
+        users_in_db = "Käyttäjiä tietokannassa"
+    } 
+%]
