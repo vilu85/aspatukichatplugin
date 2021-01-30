@@ -49,7 +49,7 @@ gulp.task('styles', function () {
 });
 
 gulp.task( 'scripts', function() {
-  return  gulp.src( [jsSrc, '!*min.js'] )
+  return  gulp.src( [jsSrc, '!*min.js', '!./src/**/socket.io/**/*.js'] )
                 .pipe( terser() )
                 .pipe( gulp.dest( './build' ) );
 });
@@ -84,7 +84,8 @@ var files = [
   './src/**/*.tt',
   './src/**/*.pm',
   './src/**/*.svg',
-  './src/**/*.map'
+  './src/**/*.map',
+  './src/**/*.inc'
 ];
 gulp.task('buildSources', function() {
   return gulp.src(files)
@@ -168,9 +169,12 @@ function bumpPerlFileVersion(opt) {
   switch (opt) {
     case type.major:
       vArray.vMajor = parseFloat(vArray.vMajor) + 1;
+      vArray.vMinor = 0;
+      vArray.vPatch = 0;
       break;
     case type.minor:
       vArray.vMinor = parseFloat(vArray.vMinor) + 1;
+      vArray.vPatch = 0;
       break;
     case type.patch:
       vArray.vPatch = parseFloat(vArray.vPatch) + 1;
@@ -210,5 +214,9 @@ gulp.task('default',gulp.series('scripts','styles','html','automate'));
 gulp.task( 'build source zip', gulp.series( 'clean', 'bump patch', 'buildSources', 'minifyAll', 'zip' ));
 
 gulp.task( 'build', gulp.series( 'clean', 'bump minor', 'buildSources', 'minifyAll', 'zip' ));
+
+gulp.task( 'build minor', gulp.series( 'clean', 'bump minor', 'buildSources', 'minifyAll', 'zip' ));
+
+gulp.task( 'build patch', gulp.series( 'clean', 'bump patch', 'buildSources', 'minifyAll', 'zip' ));
 
 gulp.task( 'build release', gulp.series( 'clean', 'bump minor', 'buildSources', 'minifyAll', 'obfuscate', 'zip' ));
