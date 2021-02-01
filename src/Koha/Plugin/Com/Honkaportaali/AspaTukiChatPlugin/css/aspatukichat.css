@@ -289,7 +289,7 @@ div#imgViewer {
 
 #input-image {
   width: 25%;
-  position: fixed;
+  position: absolute;
   z-index: 99;
   bottom: 2px;
   left: -26%;

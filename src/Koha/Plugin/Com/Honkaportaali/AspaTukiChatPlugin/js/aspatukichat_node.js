@@ -394,6 +394,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
 
       // Take screenshot and save it in 'screenshot' variable
       $btnScreenshot.click(() => {
+        $('#chatmodal').hide();
         html2canvas(document.body).then(function(canvas) {
           var screenshot1 = canvas;
           var screenshot2 = screenshot1.toDataURL();
@@ -401,9 +402,11 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           //document.body.appendChild(canvas);
           console.log("Screenshot captured and saved in variable 'screenshot'");
           // sendImage(screenshot.toDataURL());
-          $("#screenshotPreview").src = screenshot;
+          $("#screenshotPreview").removeAttr("src");
+          $("#screenshotPreview").attr("src", screenshot2);
           $("#input-image").fadeIn();
         });
+        $('#chatmodal').show();
       });
 
       $btnDeleteImage.click(() => {

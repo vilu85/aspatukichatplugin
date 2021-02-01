@@ -30,6 +30,7 @@
     "gulp-zip": "^5.0.2"
   },
   "dependencies": {
+    "gulp-bump": "^3.2.0",
     "gulp-javascript-obfuscator": "^1.1.6"
   }
 }
