@@ -52,6 +52,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       var $userlist = $('#chatusers');
       const chatModal = $('#chatmodal'); // Chat modal
       var $btnScreenshot = $('#btnScreenshot'); // Screenshot capture button
+      var $btnDeleteImage = $('#btnDeleteImage'); // Delete screenshot button
       var $imgviewermodal = $('#imgViewerModal'); // Modal for viewing images on fullscreen
       var screenshot; // Variable where the last screenshot is saved
 
@@ -400,7 +401,14 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           //document.body.appendChild(canvas);
           console.log("Screenshot captured and saved in variable 'screenshot'");
           // sendImage(screenshot.toDataURL());
+          $("#screenshotPreview").src = screenshot;
+          $("#input-image").fadeIn();
         });
+      });
+
+      $btnDeleteImage.click(() => {
+        screenshot = undefined;
+        $("#input-image").fadeOut();
       });
     
       // Show image viewer modal when clicking on the any screenshot image
@@ -649,13 +657,13 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
             }          
           });
         }
-      });
 
-      $(document).ready(function(){
         $('[data-bs-click-animate]')
           .mousedown( function(){ var elem = $(this); elem.addClass('animated ' + elem.attr('data-bs-click-animate')); })
           .mouseup( function(){ var elem = $(this); elem.removeClass('animated ' + elem.attr('data-bs-click-animate')); });
       });
+
+      
     });
   });
 });

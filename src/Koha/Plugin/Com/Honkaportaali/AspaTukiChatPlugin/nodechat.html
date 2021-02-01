@@ -28,18 +28,28 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="bg-light shadow">
-                    <div class="input-group shadow"><input type="text" class="form-control" id="txtMessage" style="padding-bottom: 0px;" autofocus autocomplete="off" />
-                        <div class="input-group-btn">
-                            <button class="btn btn-link" id="btnScreenshot" type="button" data-bs-click-animate="flash">
-                                <i class="fa fa-camera" style="color: rgb(183,59,51);"></i>
-                            </button>
-                            <button class="btn btn-link shadow-sm" id="chat_page_submit" type="button">
-                                <i class="fa fa-paper-plane"></i>
-                            </button>
+                <form class="bg-light shadow">
+                    <div id="input-image" class="shadow">
+                        <div class="panel panel-default shadow" style="margin-bottom: 0px;">
+                            <div class="panel-heading text-right" style="padding: 0px;">
+                                <div class="btn-group btn-group-sm" role="group" id="input-image-btn-group"><button class="btn btn-primary" type="button" id="btnDeleteImage"><i class="fa fa-trash"></i></button></div>
+                            </div>
+                            <div class="panel-body"><img class="img-responsive" src="" id="screenshotPreview"></div>
                         </div>
                     </div>
-                </div>
+                    <div class="input-group shadow"><input type="text" class="form-control" id="txtMessage" style="padding-bottom: 0px;" autofocus autocomplete="off" />
+                        <div class="input-group-btn">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-link" id="btnScreenshot" type="button" data-bs-click-animate="flash">
+                                    <i class="fa fa-camera" style="color: rgb(183,59,51);"></i>
+                                </button>
+                                <button class="btn btn-link shadow-sm" id="chat_page_submit" type="button">
+                                    <i class="fa fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

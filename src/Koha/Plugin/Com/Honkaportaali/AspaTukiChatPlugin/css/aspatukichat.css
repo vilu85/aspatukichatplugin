@@ -286,3 +286,18 @@ div#imgViewer {
   -webkit-animation-name: flash;
   animation-name: flash
 }
+
+#input-image {
+  width: 25%;
+  position: fixed;
+  z-index: 99;
+  bottom: 2px;
+  left: -26%;
+  display: none;
+}
+
+#input-image-btn-group {
+  position: absolute;
+  right: 1px;
+  top: -28px;
+}
