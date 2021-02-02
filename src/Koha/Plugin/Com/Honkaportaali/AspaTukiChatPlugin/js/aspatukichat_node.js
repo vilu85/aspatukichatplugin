@@ -43,6 +43,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       var $window = $(window);
       var $usernameInput = $(".loggedinusername").html(); //$('.usernameInput'); // Input for username
       var $messages = $('.chat-box'); // Messages area
+      var $screenshotPreviewPanel = $('#screenshotPreviewPanel');
       var $inputMessage = $('#txtMessage'); //$('.inputMessage'); // Input message input box
 
       var $loginPage = $('.login.page'); // The login page
@@ -163,6 +164,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
             };
             socket.emit('new image message', messageWithImage);
             screenshot = undefined;
+            $("#input-image").fadeOut();
           } else {
             // tell server to execute 'new message' and send along one parameter
             socket.emit('new message', message);
@@ -417,6 +419,12 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       // Show image viewer modal when clicking on the any screenshot image
       $messages.click((e) => {
         if(e.target.className == "screenshot") {
+          $('#imgViewer').html('').append( $(e.target).clone().removeClass('screenshot') );
+          $imgviewermodal.css("display", "block");
+        }
+      });
+      $screenshotPreviewPanel.click((e) => {
+        if(e.target.classList.contains("screenshot")) {
           $('#imgViewer').html('').append( $(e.target).clone().removeClass('screenshot') );
           $imgviewermodal.css("display", "block");
         }

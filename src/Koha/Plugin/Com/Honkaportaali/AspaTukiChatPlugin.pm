@@ -28,9 +28,9 @@ use CGI::Carp qw/fatalsToBrowser/;
 use strict;
 
 ## Here we set our plugin version
-our $VERSION = "1.2.2";
+our $VERSION = "1.2.4";
 ## Date updated
-our $DATE_UPDATED = "2021-02-01";
+our $DATE_UPDATED = "2021-02-02";
 
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
@@ -566,7 +566,8 @@ sub configuration_script {
     $scriptTemplate->param(
         is_chat_enabled => $self->isChatEnabled(),
         motd => $self->retrieve_data('motd'),
-        host => $self->retrieve_data('host')
+        host => $self->retrieve_data('host'),
+        version => $VERSION
     );
 
     $self->output_html( $scriptTemplate->output() );
@@ -715,7 +716,8 @@ sub configure {
         sid => $sid,
         uid => $uid,
         session_id => $sessionID,
-        plugins_dir   => $pluginsdir,
+        plugins_dir => $pluginsdir,
+        version => $VERSION
         #metadata => $args->{'metadata'},
         #class => $args->{'metadata'}->{'class'}
     );
