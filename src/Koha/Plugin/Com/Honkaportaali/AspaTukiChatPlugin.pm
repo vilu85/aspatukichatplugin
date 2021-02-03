@@ -620,6 +620,7 @@ sub intranet_js {
             var is_chat_enabled = ] . $self->isChatEnabled() .q[;
             var motd = '] . $self->retrieve_data('motd') . q[';
             var host = '] . $self->retrieve_data('host') . q[';
+            var pluginVersion = '] . $VERSION . q[';
         ];
 
         return q|
