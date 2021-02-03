@@ -213,7 +213,7 @@ gulp.task('default',gulp.series('scripts','styles','html','automate'));
 
 gulp.task( 'build source zip', gulp.series( 'clean', 'bump patch', 'buildSources', 'minifyAll', 'zip' ));
 
-gulp.task( 'build', gulp.series( 'clean', 'bump minor', 'buildSources', 'minifyAll', 'zip' ));
+gulp.task( 'build', gulp.series( 'clean', 'buildSources', 'minifyAll', 'zip' ));
 
 gulp.task( 'build minor', gulp.series( 'clean', 'bump minor', 'buildSources', 'minifyAll', 'zip' ));
 

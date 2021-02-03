@@ -6,6 +6,7 @@
 # Node artifact files
 node_modules/
 package-lock.json
+node_modules_orig/
 
 # Building directory
 build/
