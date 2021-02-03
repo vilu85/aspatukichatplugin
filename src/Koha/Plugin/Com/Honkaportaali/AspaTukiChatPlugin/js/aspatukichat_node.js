@@ -2,7 +2,7 @@ var payload;
 var lastTimestamp;
 var prog;
 var error;
-var motd;
+var motd, pluginVersion;
 var isChatVisible = false;
 var screenshot;
 class cachedMessage {
@@ -296,7 +296,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         } else {
           $messages.append($el);
         }
-        $messages[0].scrollTop = $messages[0].scrollHeight;
+        scrollTop();
       };
 
       // Prevents input from having injected markup
@@ -570,6 +570,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       }
 
       //---- Helper functions ----//
+
       function updateUnreadMsgs(count) {
         document.querySelector("#unreadMsgs").innerText = count > 0 ? count : "";
       }
@@ -644,6 +645,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
             isChatVisible = !isChatVisible;
             if(isChatVisible) {
               $('#chatmodal').fadeIn();
+              scrollTop();
               $.cookie("isChatOpen", 1);
               unreadMsgs = 0;
               updateUnreadMsgs(unreadMsgs);
@@ -673,11 +675,15 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           .mousedown( function(){ var elem = $(this); elem.addClass('animated ' + elem.attr('data-bs-click-animate')); })
           .mouseup( function(){ var elem = $(this); elem.removeClass('animated ' + elem.attr('data-bs-click-animate')); });
       });
-
       
     });
   });
 });
+
+function scrollTop() {
+  //$messages[0].scrollTop = $messages[0].scrollHeight;
+  $('.chat-box')[0].scrollTop = $('.chat-box')[0].scrollHeight;
+}
 
 function hideChat() {
   isChatVisible = false;
@@ -689,5 +695,6 @@ function restoreChatState() {
   isChatVisible = ($.cookie("isChatOpen") == 1);
   if(isChatVisible) {
     $('#chatmodal').show();
+    scrollTop();
   }
 }
