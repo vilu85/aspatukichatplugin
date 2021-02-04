@@ -662,7 +662,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
             if(maximize) {
               $('#btnChatMaximize').children().removeClass("fa-window-maximize");
               $('#btnChatMaximize').children().addClass("fa-window-restore");
-              $chatmessages.css("max-height", window.innerHeight + "px");
+              $chatmessages.css("max-height", $('.main').innerHeight() + "px");
             } else {
               $('#btnChatMaximize').children().removeClass("fa-window-restore");
               $('#btnChatMaximize').children().addClass("fa-window-maximize");
