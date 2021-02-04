@@ -301,3 +301,8 @@ div#imgViewer {
   right: 1px;
   top: -28px;
 }
+
+#version-info {
+  position: absolute;
+  bottom: 5px;
+}
