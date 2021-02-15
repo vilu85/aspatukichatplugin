@@ -767,11 +767,10 @@ sub install() {
 sub upgrade {
     my ( $self, $args ) = @_;
 
-    ## FIXME: dt_from_string is undefined!
     my $dt = dt_from_string();
     $self->store_data( { last_upgraded => $dt->ymd('-') . ' ' . $dt->hms(':') } );
     
-    $self->store_data( { motd => '', is_enabled => 1 } );
+    #$self->store_data( { motd => '', is_enabled => 1 } );
 
     return 1;
 }
