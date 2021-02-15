@@ -138,8 +138,15 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           if (!/\buser_id=/.test(document.cookie)) { //if no 'user_id' in cookies
             document.cookie = 'user_id=' + generateHash(32);  //add cookie 'user_id'
           }
-          // Tell the server your username
-          socket.emit('add user', username);
+          
+          // Old way to join: Tell the server your username
+          //socket.emit('add user', username);
+
+          var data = {
+            'username' : username,
+            'clientVersion' : clientVersion
+          };
+          socket.emit('join', data);
         }
       };
 
