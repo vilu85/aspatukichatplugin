@@ -101,8 +101,14 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         $userlist.append($userentry);
       };
 
+      const clearUsersBox = () => {
+        $userlist.children().remove();
+      };
+
       const getAlreadyAddedUsers = (data) => {
+        console.log('getAlreadyAddedUsers for data = %s', data);
         return $('.userentry').filter(function (i) {
+          console.log('filter returns %s === %s', $(this).data('username'), data.username);
           return $(this).data('username') === data.username;
         });
       };
@@ -144,7 +150,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
 
           var data = {
             'username' : username,
-            'clientVersion' : clientVersion
+            'clientVersion' : pluginVersion
           };
           socket.emit('join', data);
         }
@@ -515,6 +521,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
 
       socket.on('disconnect', () => {
         log('yhteys katkaistu');
+        clearUsersBox();
       });
 
       socket.on('reconnect', () => {
