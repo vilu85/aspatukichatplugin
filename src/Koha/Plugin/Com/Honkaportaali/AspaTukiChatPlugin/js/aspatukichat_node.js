@@ -106,9 +106,9 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       };
 
       const getAlreadyAddedUsers = (data) => {
-        console.log('getAlreadyAddedUsers for data = %s', data);
+        //console.log('getAlreadyAddedUsers for data = %s', data);
         return $('.userentry').filter(function (i) {
-          console.log('filter returns %s === %s', $(this).data('username'), data.username);
+          //console.log('filter returns %s === %s', $(this).data('username'), data.username);
           return $(this).data('username') === data.username;
         });
       };
@@ -415,7 +415,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           var screenshot2 = screenshot1.toDataURL();
           screenshot = screenshot2.toString('base64');
           //document.body.appendChild(canvas);
-          console.log("Screenshot captured and saved in variable 'screenshot'");
+          //console.log("Screenshot captured and saved in variable 'screenshot'");
           // sendImage(screenshot.toDataURL());
           $("#screenshotPreview").removeAttr("src");
           $("#screenshotPreview").attr("src", screenshot2);
@@ -461,7 +461,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         data.activeUsers.map((user) => {
           users.add(user);
           var existingUserData = {
-            username : user,
+            username : user.username,
             rand : Math.random() * 10e5
           };
           addToUsersBox(existingUserData);
@@ -537,7 +537,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
 
       // Whenever the server emits 'new server message', update the chat body
       socket.on('new server message', (data) => {
-        console.log("data: %s", data);
+        //console.log("data: %s", data);
         var data2 = {
           username: 'System',
           message: data.data
@@ -547,7 +547,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
 
       // Receive images
       socket.on('image', image => {
-        console.log("socket.on image event called");
+        //console.log("socket.on image event called");
         // create image with
         const img = new Image();
         // change image type to whatever you use, or detect it in the backend 
