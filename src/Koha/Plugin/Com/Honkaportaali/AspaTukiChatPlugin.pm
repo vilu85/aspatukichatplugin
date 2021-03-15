@@ -28,9 +28,9 @@ use CGI::Carp qw/fatalsToBrowser/;
 use strict;
 
 ## Here we set our plugin version
-our $VERSION = "1.2.12";
+our $VERSION = "1.2.14";
 ## Date updated
-our $DATE_UPDATED = "2021-02-24";
+our $DATE_UPDATED = "2021-03-11";
 
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
@@ -602,6 +602,7 @@ sub intranet_head {
     return q|
         <link rel="stylesheet" href="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/css/aspatukichat.css"/>
         <link rel="stylesheet" href="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/css/lobibox.min.css"/>
+        <script type="JavaScript" src="/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.min.js"></script>
     |;
 }
 
@@ -611,10 +612,10 @@ sub intranet_js {
     my $userenv = C4::Context->userenv;
 
     if($userenv and $userenv->{flags} > 0) {
-        my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.min.js')];
+        my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.min.js');];
         my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/aspatukichat_node.js');];
-        my $notification_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/notifications.min.js')];
-        my $html2canvas_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/html2canvas.min.js')];
+        my $notification_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/notifications.min.js');];
+        my $html2canvas_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/html2canvas.min.js');];
 
         my $chat_configuration = q[
             var is_chat_enabled = ] . $self->isChatEnabled() .q[;
