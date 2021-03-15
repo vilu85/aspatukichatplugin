@@ -52,10 +52,12 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       const inboxPeople = document.querySelector("#chatusers"); // User list
       var $userlist = $('#chatusers');
       const chatModal = $('#chatmodal'); // Chat modal
-      var $btnScreenshot = $('#btnScreenshot'); // Screenshot capture button
+      //var $btnScreenshot = $('#btnScreenshot'); // Screenshot capture button
+      var $itemScreenshotFull = $('#captureFullscreen');
+      var $itemScreenshotSingle = $('#captureSingle');
       var $btnDeleteImage = $('#btnDeleteImage'); // Delete screenshot button
       var $imgviewermodal = $('#imgViewerModal'); // Modal for viewing images on fullscreen
-      var screenshot; // Variable where the last screenshot is saved
+      //var screenshot; // Variable where the last screenshot is saved
 
       // Prompt for setting a username
       var username = $(".loggedinusername").html();
@@ -142,7 +144,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           // Check and generate userid cookie if needed
           // TODO: Implement this: https://stackoverflow.com/questions/22594897/socket-io-disconnects-when-refreshed
           if (!/\buser_id=/.test(document.cookie)) { //if no 'user_id' in cookies
-            document.cookie = 'user_id=' + generateHash(32);  //add cookie 'user_id'
+            document.cookie = 'user_id=' + generateHash(32) + ';path=/';  //add cookie 'user_id'
           }
           
           // Old way to join: Tell the server your username
@@ -408,7 +410,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       });
 
       // Take screenshot and save it in 'screenshot' variable
-      $btnScreenshot.click(() => {
+      $itemScreenshotFull.click(() => {
         $('#chatmodal').hide();
         $('#changelanguage').hide();
         html2canvas(document.body).then(function(canvas) {
@@ -421,6 +423,12 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
         });
         $('#changelanguage').show();
         $('#chatmodal').show();
+      });
+
+      // Activate hovering and take screenshot after clicking an element
+      $itemScreenshotSingle.click((e) => {
+        e.stopPropagation();
+        initTargetHover();
       });
 
       $btnDeleteImage.click(() => {
@@ -640,7 +648,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
 
           // Focus chat inputbox and create cookie to keep chat open when the the chat is opened
           $('#chatmodal').on('shown.bs.modal', function () {
-            $.cookie("isChatOpen", 1);
+            $.cookie("isChatOpen", 1, { path: '/' });
             unreadMsgs = 0;
             $('#txtMessage').focus();
           });
@@ -659,7 +667,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
             if(isChatVisible) {
               $('#chatmodal').fadeIn();
               scrollTop();
-              $.cookie("isChatOpen", 1);
+              $.cookie("isChatOpen", 1, { path: '/' });
               unreadMsgs = 0;
               updateUnreadMsgs(unreadMsgs);
               $('#txtMessage').focus();
@@ -684,9 +692,14 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
           });
         }
 
+        $("a.screenshotMenuItem").click(function() {
+          $("#screenshotMenu").dropdown("toggle");
+        });
+
         $('[data-bs-click-animate]')
           .mousedown( function(){ var elem = $(this); elem.addClass('animated ' + elem.attr('data-bs-click-animate')); })
           .mouseup( function(){ var elem = $(this); elem.removeClass('animated ' + elem.attr('data-bs-click-animate')); });
+        
       });
       
     });
@@ -712,42 +725,36 @@ function restoreChatState() {
   }
 }
 
-// var hoverOn = false;
-// function initTargetHover() {
-//   var test;
-//   //Fixme: related target won't work
-//   $('body').on('mouseover', function(e) {
-//     test = e;
-//     console.log('mouseenter', e);
-//     $( e ).trigger( "hoverTarget", e.relatedTarget );
-//   });
+function initTargetHover() {
+    $('#chatmodal').hide();
+    $( "body *" ).on( "mouseenter.hoverhandler", {}, function(e) { $(e.currentTarget).addClass("hoverthis");});
+    $( "body *" ).on( "mouseout.hoverhandler", {}, function(e) { $(e.currentTarget).removeClass("hoverthis");});
+    $( "body *" ).on( "click.hoverhandler", {}, function(e) {
+      $(e.currentTarget).removeClass("hoverthis");
+      $(e.currentTarget).show().fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200);
+      $(document).trigger( "screenshotThis", $(e.currentTarget));
+      targetHoverOff();
+      return false;
+    });
+}
 
-//   $('body').on('mouseout', function(e) {
-//     test = e;
-//     console.log('mouseleave ', e);
-//     $( e ).trigger( "unhoverTarget", e.relatedTarget );    
-//   });
+function targetHoverOff() {
+  $( "body *" ).off( ".hoverhandler" );
+}
 
-//   $('body').on("hoverTarget", function(e) {
-//     $( e ).addClass( "hoverthis" );
-//   });
-//   $('body').on("unhoverTarget", function(e) {
-//     $( e ).removeClass( "hoverthis" );
-//   });
-// }
-
-// function toggleTargetHover(b) {
-//   var $body = $('body');
-
-//   if(b) {
-//     $('body').on("hoverTarget", function(e) {
-//       $( e ).addClass( "hoverthis" );
-//     });
-//     $('body').on("unhoverTarget", function(e) {
-//       $( e ).removeClass( "hoverthis" );
-//     });
-//   } else {
-//     $('body').off("hoverTarget");
-//     $('body').off("unhoverTarget");
-//   }
-// }
+$(document).on('screenshotThis', {}, function(event, targetElement){
+  if(targetElement != undefined) {
+    $('#chatmodal').hide();
+    $('#changelanguage').hide();
+    html2canvas(targetElement).then(function(canvas) {
+      var screenshot1 = canvas;
+      var screenshot2 = screenshot1.toDataURL();
+      screenshot = screenshot2.toString('base64');
+      $("#screenshotPreview").removeAttr("src");
+      $("#screenshotPreview").attr("src", screenshot2);
+      $("#input-image").fadeIn();
+    });
+    $('#changelanguage').show();
+    $('#chatmodal').show();
+  }
+});

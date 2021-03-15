@@ -346,3 +346,27 @@ div#imgViewer {
   position: absolute;
   bottom: 5px;
 }
+
+#captureInstruction {
+  z-index: 9999;
+  position: fixed;
+  top: 20%;
+  width: 100%;
+  border: #000 1px solid;
+  box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
+  background: rgb(0 0 0 / 60%);
+  color: #fff;
+  -webkit-text-stroke: 0.01em black;
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-shadow: 1px 1px 2px #000;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.hoverthis {
+  -webkit-box-shadow: 0 5px 15px rgb(0 0 0 / 50%)!important;
+  box-shadow: 0 5px 15px rgb(0 0 0 / 50%)!important;
+  border: 1px solid #999!important;
+  border-radius: 7px;
+}
