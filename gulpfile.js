@@ -19,6 +19,8 @@ var sassSrc = './src/**/*.scss';
 var cssSrc = './src/**/*.css';
 var htmlSrc = './src/**/*.html';
 
+var filenameVersionString;
+
 const AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
   'ie_mob >= 10',
@@ -72,7 +74,7 @@ gulp.task('html', function() {
 
 gulp.task('zip', function () {
   return gulp.src('./build/**')
-                .pipe( zip('AspaTukiChatPlugin.kpz') )
+                .pipe( zip('AspaTukiChatPlugin' + filenameVersionString + '.kpz') )
                 .pipe(gulp.dest('./dist'));
 });
 
@@ -189,6 +191,7 @@ function bumpPerlFileVersion(opt) {
   var newVersionNumber = vArray.vMajor + periodString +
                          vArray.vMinor + periodString +
                          vArray.vPatch;
+  filenameVersionString = "-" + vArray.vMajor + "_" + vArray.vMinor + "_" + vArray.vPatch;
 
   console.info("Changing perl module version %s -> %s", oldVersionNumber, newVersionNumber);
   const date = new Date();

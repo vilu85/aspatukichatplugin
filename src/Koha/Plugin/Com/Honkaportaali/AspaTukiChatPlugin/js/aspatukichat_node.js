@@ -410,17 +410,16 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
       // Take screenshot and save it in 'screenshot' variable
       $btnScreenshot.click(() => {
         $('#chatmodal').hide();
+        $('#changelanguage').hide();
         html2canvas(document.body).then(function(canvas) {
           var screenshot1 = canvas;
           var screenshot2 = screenshot1.toDataURL();
           screenshot = screenshot2.toString('base64');
-          //document.body.appendChild(canvas);
-          //console.log("Screenshot captured and saved in variable 'screenshot'");
-          // sendImage(screenshot.toDataURL());
           $("#screenshotPreview").removeAttr("src");
           $("#screenshotPreview").attr("src", screenshot2);
           $("#input-image").fadeIn();
         });
+        $('#changelanguage').show();
         $('#chatmodal').show();
       });
 
@@ -625,7 +624,7 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
 
       // Screenshot capture
       function takeScreenshot() {
-        html2canvas(document.body).then(function(canvas) {
+        html2canvas(document.body, ignoreElements).then(function(canvas) {
           screenshot = canvas;
           document.body.appendChild(canvas);
         });
@@ -712,3 +711,43 @@ function restoreChatState() {
     scrollTop();
   }
 }
+
+// var hoverOn = false;
+// function initTargetHover() {
+//   var test;
+//   //Fixme: related target won't work
+//   $('body').on('mouseover', function(e) {
+//     test = e;
+//     console.log('mouseenter', e);
+//     $( e ).trigger( "hoverTarget", e.relatedTarget );
+//   });
+
+//   $('body').on('mouseout', function(e) {
+//     test = e;
+//     console.log('mouseleave ', e);
+//     $( e ).trigger( "unhoverTarget", e.relatedTarget );    
+//   });
+
+//   $('body').on("hoverTarget", function(e) {
+//     $( e ).addClass( "hoverthis" );
+//   });
+//   $('body').on("unhoverTarget", function(e) {
+//     $( e ).removeClass( "hoverthis" );
+//   });
+// }
+
+// function toggleTargetHover(b) {
+//   var $body = $('body');
+
+//   if(b) {
+//     $('body').on("hoverTarget", function(e) {
+//       $( e ).addClass( "hoverthis" );
+//     });
+//     $('body').on("unhoverTarget", function(e) {
+//       $( e ).removeClass( "hoverthis" );
+//     });
+//   } else {
+//     $('body').off("hoverTarget");
+//     $('body').off("unhoverTarget");
+//   }
+// }
