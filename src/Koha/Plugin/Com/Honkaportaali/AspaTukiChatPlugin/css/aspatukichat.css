@@ -7,10 +7,10 @@
 }
 
 .messages-box, .chat-box {
-  /* max-height: 300px; */
-  min-height: 150px;
+  min-height: 390px;
   overflow-y: scroll;
   max-height: 390px;
+  height: 390px;
 }
 
 .rounded-lg {

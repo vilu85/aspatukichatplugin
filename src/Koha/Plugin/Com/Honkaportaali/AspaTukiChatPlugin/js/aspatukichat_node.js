@@ -655,7 +655,8 @@ $.get("/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/nodechat.html", 
 
           // Remove isChatOpen-cookie
           $('#chatmodal').on('hidden.bs.modal', function () {
-            $.removeCookie("isChatOpen");
+            //$.removeCookie("isChatOpen");
+            $.cookie("isChatOpen", 0, { path: '/' });
           });
 
           $('#btnChatMinimize').click( () => {
@@ -714,7 +715,8 @@ function scrollTop() {
 function hideChat() {
   isChatVisible = false;
   $('#chatmodal').fadeOut();
-  $.removeCookie("isChatOpen");
+  //$.removeCookie("isChatOpen");
+  $.cookie("isChatOpen", 0, { path: '/' });
 }
 
 function restoreChatState() {
