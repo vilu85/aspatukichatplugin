@@ -727,10 +727,20 @@ function restoreChatState() {
   }
 }
 
+function showCaptureInstructions() {
+  var $captureInstructionText = $('<h1/>').text("Click on element to capture");
+  var $captureInstructionDiv = $('<div class="text-center" id="captureInstruction"/>').append($captureInstructionText);
+  $("body").prepend($captureInstructionDiv);
+  setTimeout(() => {
+    $($captureInstructionDiv).fadeOut(2500, ()=>{ $("#captureInstruction").remove(); });
+  }, 5000);
+}
+
 function initTargetHover() {
     $('#chatmodal').hide();
     $( "body *" ).on( "mouseenter.hoverhandler", {}, function(e) { $(e.currentTarget).addClass("hoverthis");});
     $( "body *" ).on( "mouseout.hoverhandler", {}, function(e) { $(e.currentTarget).removeClass("hoverthis");});
+    $( "body *" ).on( "mouseleave.hoverhandler", {}, function(e) { $(e.currentTarget).removeClass("hoverthis");});
     $( "body *" ).on( "click.hoverhandler", {}, function(e) {
       $(e.currentTarget).removeClass("hoverthis");
       $(e.currentTarget).show().fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200);
