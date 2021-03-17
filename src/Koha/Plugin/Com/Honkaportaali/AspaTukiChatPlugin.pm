@@ -28,9 +28,9 @@ use CGI::Carp qw/fatalsToBrowser/;
 use strict;
 
 ## Here we set our plugin version
-our $VERSION = "1.3.1";
+our $VERSION = "1.3.2";
 ## Date updated
-our $DATE_UPDATED = "2021-03-16";
+our $DATE_UPDATED = "2021-03-17";
 
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
