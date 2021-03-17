@@ -28,7 +28,7 @@ use CGI::Carp qw/fatalsToBrowser/;
 use strict;
 
 ## Here we set our plugin version
-our $VERSION = "1.3.2";
+our $VERSION = "1.3.5";
 ## Date updated
 our $DATE_UPDATED = "2021-03-17";
 
@@ -561,13 +561,27 @@ sub tool_step2 {
 sub configuration_script {
     my ( $self, $args ) = @_;
     my $cgi = $self->{'cgi'};
+
+    my $dir = $self->bundle_path.'/i18n';
+    opendir(my $dh, $dir) || die "Can't opendir $dir: $!";
+    my @files = grep { /^[^.].*(json)$/ && -f "$dir/$_" } readdir($dh);
+    closedir $dh;
+
+    my @tokens;
+    foreach my $file (@files) {
+        my @splitted = split(/\./, $file, -1);
+        my $lang = $splitted[0];
+        push @tokens, {key => $lang, text => decode("UTF-8", $self->mbf_read('i18n/'.$file))};
+    }
+
     my $scriptTemplate = $self->get_template({ file => 'configuration-script.tt' });
 
     $scriptTemplate->param(
         is_chat_enabled => $self->isChatEnabled(),
         motd => $self->retrieve_data('motd'),
         host => $self->retrieve_data('host'),
-        version => $VERSION
+        version => $VERSION,
+        tokens => \@tokens,
     );
 
     $self->output_html( $scriptTemplate->output() );
@@ -612,6 +626,7 @@ sub intranet_js {
     my $userenv = C4::Context->userenv;
 
     if($userenv and $userenv->{flags} > 0) {
+
         my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.min.js');];
         my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/aspatukichat_node.js');];
         my $notification_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/notifications.min.js');];
@@ -622,6 +637,7 @@ sub intranet_js {
             var motd = '] . $self->retrieve_data('motd') . q[';
             var host = '] . $self->retrieve_data('host') . q[';
             var pluginVersion = '] . $VERSION . q[';
+            var version = '] . $VERSION . q[';
         ];
 
         return q|
