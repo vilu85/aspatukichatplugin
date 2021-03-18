@@ -728,7 +728,8 @@ function restoreChatState() {
 }
 
 function showCaptureInstructions() {
-  var $captureInstructionText = $('<h1/>').text(tokens[$('html').attr('lang')].CLICK_ELEMENT_TO_CAPTURE);
+  //tokens[$('html').attr('lang')].CLICK_ELEMENT_TO_CAPTURE
+  var $captureInstructionText = $('<h1/>').text("Klikkaa aluetta tai elementtiä josta haluat kuvakaappauksen");
   var $captureInstructionDiv = $('<div class="text-center" id="captureInstruction"/>').append($captureInstructionText);
   $("body").prepend($captureInstructionDiv);
   setTimeout(() => {

@@ -28,9 +28,9 @@ use CGI::Carp qw/fatalsToBrowser/;
 use strict;
 
 ## Here we set our plugin version
-our $VERSION = "1.3.5";
+our $VERSION = "1.3.7";
 ## Date updated
-our $DATE_UPDATED = "2021-03-17";
+our $DATE_UPDATED = "2021-03-18";
 
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
@@ -627,10 +627,37 @@ sub intranet_js {
 
     if($userenv and $userenv->{flags} > 0) {
 
-        my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.min.js');];
-        my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/aspatukichat_node.js');];
-        my $notification_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/notifications.min.js');];
-        my $html2canvas_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/html2canvas.min.js');];
+        #my $multiScriptLoader = q[
+        #    $.getMultiScripts = function(arr, path) {
+        #        var _arr = $.map(arr, function(scr) {
+        #            return $.getScript( (path||"") + scr );
+        #        });
+        #            
+        #        _arr.push($.Deferred(function( deferred ){
+        #            $( deferred.resolve );
+        #        }));
+        #            
+        #        return $.when.apply($, _arr);
+        #    };
+        #];
+
+        my $initScript = q[
+            $.when(
+                $.getScript( "/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.min.js" ),
+                $.getScript( "/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/html2canvas.min.js" ),
+                $.getScript( "/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/notifications.min.js" ),
+                $.getScript( "/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/aspatukichat_node.js" ),
+                $.Deferred(function( deferred ){
+                    $( deferred.resolve );
+                })
+            ).done(function(){
+            });
+        ];
+
+        #my $socketio_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/socket.io/socket.io.min.js');];
+        #my $aspatukichat_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/aspatukichat_node.js');];
+        #my $notification_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/notifications.min.js');];
+        #my $html2canvas_js = q[$.getScript('/plugin/Koha/Plugin/Com/Honkaportaali/AspaTukiChatPlugin/js/html2canvas.min.js');];
 
         my $chat_configuration = q[
             var is_chat_enabled = ] . $self->isChatEnabled() .q[;
@@ -640,11 +667,13 @@ sub intranet_js {
             var version = '] . $VERSION . q[';
         ];
 
-        return q|
-            <script>| . $socketio_js . q|</script>
-            <script>| . $notification_js . q|</script>
-            <script>| . $chat_configuration . $aspatukichat_js . $html2canvas_js . q|</script>
-        |;
+        #return q|
+        #    <script>| . $socketio_js . q|</script>
+        #    <script>| . $notification_js . q|</script>
+        #    <script>| . $chat_configuration . $aspatukichat_js . $html2canvas_js . q|</script>
+        #|;
+
+        return "<script>$chat_configuration $initScript</script>";
     }
 
     return;
