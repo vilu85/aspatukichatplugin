@@ -20,7 +20,7 @@
     "bb >= 10"
   ],
   "devDependencies": {
-    "del": "^6.0.0",
+    "del": "^7.0.0",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-csso": "^4.0.1",
